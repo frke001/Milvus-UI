@@ -17,7 +17,19 @@ def connect(request: ConnectRequest) -> bool:
             status_code=400, content="Failed to connect to Milvus Server!"
         )
 
-
+def disconnect():
+    milvus_client = MilvusClientSingleton._instance
+    if milvus_client is not None:
+        milvus_client.close()
+        MilvusClientSingleton._instance = None
+        return JSONResponse(
+                status_code=200,
+                content="Successfully disconnected.",
+        )
+    else:
+        return JSONResponse(
+            status_code=400, content="Failed to connect to Milvus Server!"
+        )
 def create_db(request: DatabaseRequest) -> bool:
     # milvus_client = MilvusClientSingleton.get_instance(uri_request.uri)
     milvus_client = MilvusClientSingleton._instance
