@@ -1,0 +1,66 @@
+<div class="flex justify-center h-screen">
+  <p-toast></p-toast>
+  <!-- <div class="w-11/12"> -->
+  <!-- <p-menubar [model]="items">
+        <ng-template pTemplate="start">
+            <p-image src="milvus-icon-color.png" width="40px"></p-image>
+        </ng-template>
+        <ng-template pTemplate="item">
+            <p class="m-0 text-xl ml-2">Welcome to Milvus</p>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div class="flex align-items-center gap-2">
+               
+            </div>
+        </ng-template>
+    </p-menubar> -->
+  <!-- </div> -->
+  <p-card class="w-full">
+    <div class="p-2 flex justify-between">
+      <div class="flex items-center gap-3">
+        <p-image src="milvus-icon-color.png" width="40px"></p-image>
+        <p class="text-lg m-0 font-medium sm:block hidden">Welcome to Milvus</p>
+      </div>
+      <div class="flex items-center gap-5 mr-3">
+        <span
+          pRipple
+          class="cursor-pointer rounded-xl"
+          (click)="onThemeChange(checked ? 'light' : 'dark')"
+          [pTooltip]="themeTooltip"
+          tooltipPosition="bottom"
+        >
+          @if (checked) {
+          <i class="pi pi-moon" style="font-size: 1.1rem"></i>
+          }@else {
+          <i class="pi pi-sun" style="font-size: 1.1rem"></i>
+          }
+        </span>
+
+        <div>
+          <p class="m-0 text-sm">{{ this.uri }}</p>
+          <p class="m-0 text-sm run-collor">running</p>
+        </div>
+        <span class="cursor-pointer rounded-2xl" (click)="disconnect()">
+          <i
+            pRipple
+            class="pi pi-sign-out"
+            style="font-size: 1.3rem; color: #60a5fa"
+            [pTooltip]="disconnectTooltip"
+            tooltipPosition="left"
+          ></i>
+        </span>
+      </div>
+    </div>
+  </p-card>
+  <ng-template #themeTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Change Theme</p>
+    </div>
+  </ng-template>
+  <ng-template #disconnectTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Disconnect</p>
+    </div>
+  </ng-template>
+  <router-outlet />
+</div>

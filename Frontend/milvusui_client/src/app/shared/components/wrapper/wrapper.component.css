@@ -1,0 +1,15 @@
+::ng-deep .p-card {
+    border-radius: 0 !important;
+}
+::ng-deep .p-card-body {
+    padding: 0 !important;
+}
+::ng-deep .p-card-content {
+    padding: 0 !important;
+}
+.run-collor{
+    color: #60a5fa
+}
+::ng-deep .p-toggleButton{
+    background-color: inherit !important;
+}

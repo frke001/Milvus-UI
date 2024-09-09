@@ -1,0 +1,63 @@
+<div class="w-full h-screen flex flex-col justify-center items-center">
+  <p-toast></p-toast>
+  <div class="flex justify-center">
+    <p-image
+      src="milvus_logo.png"
+      alt="Milvus Logo"
+      width="280px"
+      class="mb-3"
+    />
+  </div>
+  <div
+    class="xl:w-1/3 lg:w-2/4 md:w-3/4 w-11/12 bg-slate-700/30 p-8 rounded-lg flex flex-col gap-5"
+  >
+    <p class="text-xl m-0">Conncet to Milvus Server</p>
+    <form [formGroup]="form" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-2 w-full mt-4">
+        <div class="flex gap-2 items-center">
+          <label for="uri" class="text-base">Milvus Address</label>
+          <span
+            pTooltip="Enter URL to connect to Milvus Server"
+            class="pi pi-info-circle"
+            style="color: #60a5fa"
+          ></span>
+        </div>
+        <input
+          pInputText
+          id="uri"
+          aria-describedby="username-help"
+          placeholder="ex. http://localhost:19530"
+          formControlName="uri"
+          required
+          (keyup.enter)="connect()"
+          variant="outlined"
+        />
+        @if (this.form.controls['uri'].hasError("required") &&
+        this.form.get('uri')?.dirty) {
+        <small class="p-error">Address is required!</small>
+        } @if (this.form.controls['uri'].hasError('minlength')) {
+        <small class="p-error">Address too short!</small>
+        } @if (this.form.controls['uri'].hasError('maxlength')) {
+        <small class="p-error">Address too long!</small>
+        }
+      </div>
+      <p-button
+        class="w-full mt-5"
+        label="Connect"
+        type="submit"
+        (onClick)="connect()"
+        [disabled]="form.invalid"
+      >
+        <ng-template pTemplate="icon">
+          @if(this.uiService.isLoading){
+          <i class="pi pi-spinner pi-spin"></i>
+          }
+        </ng-template>
+      </p-button>
+    </form>
+  </div>
+</div>
+
+<!-- <span class="pi pi-search"></span> -->
+
+<!-- <p-inputSwitch [(ngModel)]="checked" (click)="onThemeChange(checked ? 'dark' : 'light')"></p-inputSwitch> -->
