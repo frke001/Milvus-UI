@@ -1,49 +1,118 @@
-<div class="flex justify-center h-screen">
+<div class="flex flex-col h-screen">
   <p-toast></p-toast>
-  <p-card class="w-full">
-    <div class="p-2 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <span
-          class="cursor-pointer"
-          [pTooltip]="logoTooltip"
-          tooltipPosition="right"
-          (click)="onHomeClick()"
-        >
-          <p-image src="milvus-icon-color.png" width="40px"></p-image>
-        </span>
-        <p class="text-lg m-0 font-medium sm:block hidden">Welcome to Milvus</p>
-      </div>
-      <div class="flex items-center gap-5 mr-3">
-        <span
-          pRipple
-          class="cursor-pointer rounded-xl"
-          (click)="onThemeChange(checked ? 'light' : 'dark')"
-          [pTooltip]="themeTooltip"
-          tooltipPosition="bottom"
-        >
-          @if (checked) {
-          <i class="pi pi-moon" style="font-size: 1.1rem"></i>
-          }@else {
-          <i class="pi pi-sun" style="font-size: 1.1rem"></i>
-          }
-        </span>
+  <div class="wrapper">
+    <p-card class="w-full">
+      <div class="p-2 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <span
+            class="cursor-pointer"
+            [pTooltip]="logoTooltip"
+            tooltipPosition="right"
+            (click)="onHomeClick()"
+          >
+            <p-image src="milvus-icon-color.png" width="40px"></p-image>
+          </span>
+          <!-- <p class="text-lg m-0 font-medium sm:block hidden">Milvus UI</p> -->
+          <div class="flex sm:gap-5 gap-7 ml-4">
+            <div class="hidden sm:block">
+              <a
+                routerLink="/features/databases"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="flex items-center gap-1 cursor-pointer text-current nav-link pb-1 transition-colors duration-300"
+              >
+                <i
+                  class="pi pi-database"
+                  style="font-size: 1.3rem; color: #60a5fa"
+                ></i>
+                <p class="m-0">Databases</p>
+              </a>
+            </div>
+            <div class="hidden sm:block">
+              <a
+                routerLink="/features/collections"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="flex items-center gap-2 cursor-pointer text-current nav-link pb-1 transition-colors duration-300"
+              >
+                <i
+                  class="pi pi-server"
+                  style="font-size: 1.3rem; color: #60a5fa"
+                ></i>
+                <p class="m-0">Collections</p>
+              </a>
+            </div>
+            <div class="sm:hidden block">
+              <a
+                routerLink="/features/databases"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [pTooltip]="menuDatabaseTooltip"
+                tooltipPosition="bottom"
+                class="cursor-pointer text-current nav-link transition-colors pb-1 duration-300"
+              >
+                <i
+                  class="pi pi-database"
+                  style="font-size: 1.3rem; color: #60a5fa"
+                ></i>
+              </a>
+            </div>
+            <div class="sm:hidden block">
+              <a
+                routerLink="/features/collections"
+                routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [pTooltip]="menuCollectionTooltip"
+                tooltipPosition="bottom"
+                class="cursor-pointer text-current nav-link transition-colors pb-1 duration-300"
+              >
+                <i
+                  class="pi pi-server"
+                  style="font-size: 1.3rem; color: #60a5fa"
+                ></i>
+              </a>
+            </div>
+          </div>
 
-        <div>
-          <p class="m-0 text-sm">{{ this.uri }}</p>
-          <p class="m-0 text-sm run-collor">running</p>
+          <!-- <p-menubar [model]="items" class="w-full">
+
+         </p-menubar> -->
         </div>
-        <span class="cursor-pointer rounded-2xl" (click)="onDisconnectClick()">
-          <i
+        <div class="flex items-center gap-5 mr-3">
+          <span
             pRipple
-            class="pi pi-sign-out"
-            style="font-size: 1.3rem; color: #60a5fa"
-            [pTooltip]="disconnectTooltip"
-            tooltipPosition="left"
-          ></i>
-        </span>
+            class="cursor-pointer rounded-xl"
+            (click)="onThemeChange(checked ? 'light' : 'dark')"
+            [pTooltip]="themeTooltip"
+            tooltipPosition="bottom"
+          >
+            @if (checked) {
+            <i class="pi pi-moon" style="font-size: 1.1rem"></i>
+            }@else {
+            <i class="pi pi-sun" style="font-size: 1.1rem"></i>
+            }
+          </span>
+
+          <div class="sm:block hidden">
+            <p class="m-0 text-sm">{{ this.uri }}</p>
+            <p class="m-0 text-sm run-collor">running</p>
+          </div>
+          <span
+            class="cursor-pointer rounded-2xl"
+            (click)="onDisconnectClick()"
+          >
+            <i
+              pRipple
+              class="pi pi-sign-out"
+              style="font-size: 1.3rem; color: #60a5fa"
+              [pTooltip]="disconnectTooltip"
+              tooltipPosition="left"
+            ></i>
+          </span>
+        </div>
       </div>
-    </div>
-  </p-card>
+    </p-card>
+  </div>
   <ng-template #themeTooltip>
     <div class="flex align-items-center">
       <p class="m-0 text-xs">Change Theme</p>
@@ -59,5 +128,17 @@
       <p class="m-0 text-xs">Milvus Home</p>
     </div>
   </ng-template>
-  <router-outlet />
+  <ng-template #menuDatabaseTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Databases</p>
+    </div>
+  </ng-template>
+  <ng-template #menuCollectionTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Collections</p>
+    </div>
+  </ng-template>
+  <div class="p-10">
+    <router-outlet />
+  </div>
 </div>

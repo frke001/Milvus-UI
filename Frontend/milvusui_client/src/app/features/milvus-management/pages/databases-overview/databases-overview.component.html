@@ -1,1 +1,18 @@
-<!-- <p-button label="k" (onClick)="click()"></p-button> -->
+<div class="w-full">
+  <p class="m-0 text-2xl font-medium">Databases</p>
+  @if(databases.length == 0 && uiService.isLoading){
+  <div class="w-full flex justify-center">
+    <i class="pi pi-spin pi-spinner" style="font-size: 6rem"></i>
+  </div>
+  }@else {
+  <div class="flex flex-wrap mt-5 gap-7">
+    @for (database of databases; track $index) {
+    <app-database-card
+      [database]="database"
+      (onDeleteDatabase)="onDelete($event)"
+    ></app-database-card>
+    }
+    <app-add-db-card></app-add-db-card>
+  </div>
+  }
+</div>

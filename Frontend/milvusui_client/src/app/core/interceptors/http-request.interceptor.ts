@@ -19,18 +19,15 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log(this.uiService.isLoading);
     
     this.uiService.enableLoader();
     this.requests.push(req);
-    console.log(this.uiService.isLoading);
     return new Observable((observer) => {
       const subscription = next
         .handle(req)
         .pipe(finalize(() => this.uiService.disableLoader()))
         .subscribe({
           next: (event) => {
-            console.log(this.uiService.isLoading);
             if (event instanceof HttpResponse) {
               observer.next(event);
               this.removeRequest(req);

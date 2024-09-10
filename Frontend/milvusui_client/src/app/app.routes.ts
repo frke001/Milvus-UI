@@ -3,6 +3,7 @@ import { ConnectionPageComponent } from './features/milvus-connection/pages/conn
 import { WrapperComponent } from './shared/components/wrapper/wrapper.component';
 import { DatabasesOverviewComponent } from '../app/features/milvus-management/pages/databases-overview/databases-overview.component';
 import { ConnectGuard } from './guards/connect.guard';
+import { CollectionsOverviewComponent } from '../app/features/milvus-management/pages/collections-overview/collections-overview.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,14 @@ export const routes: Routes = [
             '../app/features/milvus-management/pages/databases-overview/databases-overview.component'
           ).then((r) => DatabasesOverviewComponent),
         title: 'Databases Overview',
+      },
+      {
+        path: 'collections',
+        loadComponent: () =>
+          import(
+            '../app/features/milvus-management/pages/collections-overview/collections-overview.component'
+          ).then((r) => CollectionsOverviewComponent),
+        title: 'Collections Overview',
       },
     ],
   },

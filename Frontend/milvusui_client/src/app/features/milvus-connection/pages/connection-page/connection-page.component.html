@@ -22,16 +22,20 @@
             style="color: #60a5fa"
           ></span>
         </div>
-        <input
-          pInputText
-          id="uri"
-          aria-describedby="username-help"
-          placeholder="ex. http://localhost:19530"
-          formControlName="uri"
-          required
-          (keyup.enter)="connect()"
-          variant="outlined"
-        />
+        <p-iconField iconPosition="left">
+          <p-inputIcon styleClass="pi pi-link" />
+          <input
+            class="w-full"
+            pInputText
+            id="uri"
+            aria-describedby="username-help"
+            placeholder="ex. http://localhost:19530"
+            formControlName="uri"
+            required
+            (keyup.enter)="connect()"
+            variant="outlined"
+          />
+        </p-iconField>
         @if (this.form.controls['uri'].hasError("required") &&
         this.form.get('uri')?.dirty) {
         <small class="p-error">Address is required!</small>
@@ -48,7 +52,7 @@
         (onClick)="connect()"
         [disabled]="form.invalid || this.uiService.isLoading"
       >
-        <ng-template pTemplate="icon" >
+        <ng-template pTemplate="icon">
           @if(this.uiService.isLoading){
           <i class="pi pi-spinner pi-spin"></i>
           }
@@ -62,4 +66,3 @@
     </ng-template>
   </div>
 </div>
-

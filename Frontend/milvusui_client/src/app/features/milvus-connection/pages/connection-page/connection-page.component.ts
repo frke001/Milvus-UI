@@ -20,6 +20,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ConnectionService } from '../../services/connection.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SpinnerModule } from 'primeng/spinner';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
 
 @Component({
   selector: 'app-connection-page',
@@ -37,6 +39,8 @@ import { SpinnerModule } from 'primeng/spinner';
     InputTextModule,
     TooltipModule,
     SpinnerModule,
+    InputIconModule,
+    IconFieldModule
   ],
   templateUrl: './connection-page.component.html',
   styleUrl: './connection-page.component.css',
@@ -83,7 +87,7 @@ export class ConnectionPageComponent implements OnInit {
             this.form.enable();
             this.form.reset();
             this.messageService.add({
-              severity: 'error',
+              severity: 'warn',
               summary: 'Error',
               detail: err.error,
             });

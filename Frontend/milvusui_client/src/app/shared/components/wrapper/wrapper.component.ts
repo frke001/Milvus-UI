@@ -1,5 +1,16 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -12,6 +23,8 @@ import { FormsModule } from '@angular/forms';
 import { RippleModule } from 'primeng/ripple';
 import { ConnectionService } from '../../../features/milvus-connection/services/connection.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MenuItem } from 'primeng/api';
+import { MenubarModule } from 'primeng/menubar';
 
 @Component({
   selector: 'app-wrapper',
@@ -25,8 +38,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     CardModule,
     TooltipModule,
     ToggleButtonModule,
-    RippleModule
-    
+    RippleModule,
+    MenubarModule,
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './wrapper.component.html',
   styleUrl: './wrapper.component.css',
@@ -36,40 +51,54 @@ export class WrapperComponent implements OnInit {
   checked: boolean = true;
   selectedTheme: string = 'dark';
   messageService: MessageService = inject(MessageService);
-  uiService: UiService = inject(UiService)
-  uri: string = "";
-  private primeNgConfig: PrimeNGConfig = inject(PrimeNGConfig)
-  private connectionService: ConnectionService = inject(ConnectionService)
+  uiService: UiService = inject(UiService);
+  uri: string = '';
+  private primeNgConfig: PrimeNGConfig = inject(PrimeNGConfig);
+  private connectionService: ConnectionService = inject(ConnectionService);
   private destroyRef = inject(DestroyRef);
   private router: Router = inject(Router);
+  items: MenuItem[] = [
+    {
+      label: 'Databases',
+      icon: 'pi pi-home',
+    },
+    {
+      label: 'Collection',
+      icon: 'pi pi-home',
+    },
+  ];
+
   ngOnInit() {
-    let temp = localStorage.getItem("connected");
-    if(temp){
+    let temp = localStorage.getItem('connected');
+    if (temp) {
       this.uri = JSON.parse(temp);
     }
     this.primeNgConfig.ripple = true;
   }
   onDisconnectClick() {
-    this.connectionService.disconnectFromMilvus().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: string) =>{
-        localStorage.removeItem("connected");
-        this.router.navigate(['']);
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error,
-        });
-      }
-    })
+    this.connectionService
+      .disconnectFromMilvus()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: string) => {
+          localStorage.removeItem('connected');
+          this.router.navigate(['']);
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error,
+          });
+        },
+      });
   }
   onThemeChange(theme: string): void {
     this.selectedTheme = theme;
     this.uiService.setTheme(theme);
     this.checked = !this.checked;
   }
-  onHomeClick(){
+  onHomeClick() {
     this.router.navigate(['features']);
   }
 }

@@ -1,10 +1,11 @@
-::ng-deep .p-card {
+.wrapper ::ng-deep .p-card {
     border-radius: 0 !important;
+
 }
-::ng-deep .p-card-body {
+.wrapper ::ng-deep .p-card-body {
     padding: 0 !important;
 }
-::ng-deep .p-card-content {
+.wrapper ::ng-deep .p-card-content {
     padding: 0 !important;
 }
 .run-collor{
@@ -12,4 +13,13 @@
 }
 ::ng-deep .p-toggleButton{
     background-color: inherit !important;
+}
+
+.active-link {
+    border-bottom: 2px solid #60a5fa; 
+    transform: scale(1.05);
+    transition: border-bottom 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.nav-link{
+    text-decoration: none;
 }
