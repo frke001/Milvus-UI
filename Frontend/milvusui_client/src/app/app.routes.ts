@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ConnectionPageComponent } from './features/milvus-connection/pages/connection-page/connection-page.component';
 import { WrapperComponent } from './shared/components/wrapper/wrapper.component';
 import { DatabasesOverviewComponent } from '../app/features/milvus-management/pages/databases-overview/databases-overview.component';
+import { ConnectGuard } from './guards/connect.guard';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,7 @@ export const routes: Routes = [
   {
     path: 'features',
     component: WrapperComponent,
+    canActivate: [ConnectGuard],
     children: [
       {
         path: '',

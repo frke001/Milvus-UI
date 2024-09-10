@@ -1,24 +1,16 @@
 <div class="flex justify-center h-screen">
   <p-toast></p-toast>
-  <!-- <div class="w-11/12"> -->
-  <!-- <p-menubar [model]="items">
-        <ng-template pTemplate="start">
-            <p-image src="milvus-icon-color.png" width="40px"></p-image>
-        </ng-template>
-        <ng-template pTemplate="item">
-            <p class="m-0 text-xl ml-2">Welcome to Milvus</p>
-        </ng-template>
-        <ng-template pTemplate="end">
-            <div class="flex align-items-center gap-2">
-               
-            </div>
-        </ng-template>
-    </p-menubar> -->
-  <!-- </div> -->
   <p-card class="w-full">
-    <div class="p-2 flex justify-between">
+    <div class="p-2 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <p-image src="milvus-icon-color.png" width="40px"></p-image>
+        <span
+          class="cursor-pointer"
+          [pTooltip]="logoTooltip"
+          tooltipPosition="right"
+          (click)="onHomeClick()"
+        >
+          <p-image src="milvus-icon-color.png" width="40px"></p-image>
+        </span>
         <p class="text-lg m-0 font-medium sm:block hidden">Welcome to Milvus</p>
       </div>
       <div class="flex items-center gap-5 mr-3">
@@ -40,7 +32,7 @@
           <p class="m-0 text-sm">{{ this.uri }}</p>
           <p class="m-0 text-sm run-collor">running</p>
         </div>
-        <span class="cursor-pointer rounded-2xl" (click)="disconnect()">
+        <span class="cursor-pointer rounded-2xl" (click)="onDisconnectClick()">
           <i
             pRipple
             class="pi pi-sign-out"
@@ -60,6 +52,11 @@
   <ng-template #disconnectTooltip>
     <div class="flex align-items-center">
       <p class="m-0 text-xs">Disconnect</p>
+    </div>
+  </ng-template>
+  <ng-template #logoTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Milvus Home</p>
     </div>
   </ng-template>
   <router-outlet />

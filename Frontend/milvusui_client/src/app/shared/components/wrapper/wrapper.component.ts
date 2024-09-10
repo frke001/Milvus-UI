@@ -49,7 +49,7 @@ export class WrapperComponent implements OnInit {
     }
     this.primeNgConfig.ripple = true;
   }
-  disconnect() {
+  onDisconnectClick() {
     this.connectionService.disconnectFromMilvus().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: string) =>{
         localStorage.removeItem("connected");
@@ -68,5 +68,8 @@ export class WrapperComponent implements OnInit {
     this.selectedTheme = theme;
     this.uiService.setTheme(theme);
     this.checked = !this.checked;
+  }
+  onHomeClick(){
+    this.router.navigate(['features']);
   }
 }

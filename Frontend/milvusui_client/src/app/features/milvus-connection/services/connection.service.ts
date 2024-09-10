@@ -11,6 +11,7 @@ export class ConnectionService {
   private httpClient: HttpClient = inject(HttpClient);
 
   connectToMilvus(request: ConnectionRequest): Observable<string> {
+    // moze pipe(first()) za unsubscribe observable-a u servinom sloju
     return this.httpClient.post<string>(enviroment.apiUrl + 'connect', request);
   }
 

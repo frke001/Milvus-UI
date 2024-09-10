@@ -61,13 +61,8 @@ export class ConnectionPageComponent implements OnInit {
   ngOnInit(): void {
     this.uiService.setTheme(this.selectedTheme);
   }
-  // onThemeChange(theme: string): void {
-  //   this.selectedTheme = theme;
-  //   this.uiService.setTheme(theme);
-  // }
 
   connect() {
-    //this.uiService.enableLoader();
     this.form.disable();
     if (this.form.value.uri) {
       this.connectionService
@@ -77,17 +72,16 @@ export class ConnectionPageComponent implements OnInit {
           next: (res: string) => {
             this.router.navigate(['features']);
             localStorage.setItem("connected", JSON.stringify(this.form.value.uri))
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: res,
-            });
+            // this.messageService.add({
+            //   severity: 'success',
+            //   summary: 'Success',
+            //   detail: res,
+            // });
             this.form.enable();
           },
           error: (err) => {
             this.form.enable();
             this.form.reset();
-            //this.uiService.showError(err.error);
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
@@ -96,6 +90,5 @@ export class ConnectionPageComponent implements OnInit {
           },
         });
     }
-    //this.uiService.disableLoader();
   }
 }

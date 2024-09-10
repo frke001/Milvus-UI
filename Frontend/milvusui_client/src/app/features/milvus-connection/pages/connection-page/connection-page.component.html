@@ -17,7 +17,7 @@
         <div class="flex gap-2 items-center">
           <label for="uri" class="text-base">Milvus Address</label>
           <span
-            pTooltip="Enter URL to connect to Milvus Server"
+            [pTooltip]="addressTooltip"
             class="pi pi-info-circle"
             style="color: #60a5fa"
           ></span>
@@ -46,18 +46,20 @@
         label="Connect"
         type="submit"
         (onClick)="connect()"
-        [disabled]="form.invalid"
+        [disabled]="form.invalid || this.uiService.isLoading"
       >
-        <ng-template pTemplate="icon">
+        <ng-template pTemplate="icon" >
           @if(this.uiService.isLoading){
           <i class="pi pi-spinner pi-spin"></i>
           }
         </ng-template>
       </p-button>
     </form>
+    <ng-template #addressTooltip>
+      <div class="flex align-items-center">
+        <p class="m-0 text-xs">Enter URL to connect to Milvus Server</p>
+      </div>
+    </ng-template>
   </div>
 </div>
 
-<!-- <span class="pi pi-search"></span> -->
-
-<!-- <p-inputSwitch [(ngModel)]="checked" (click)="onThemeChange(checked ? 'dark' : 'light')"></p-inputSwitch> -->
