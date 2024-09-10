@@ -82,7 +82,7 @@ def delete_db(db_name: str):
             )
         except MilvusException as ex:
             return JSONResponse(
-                status_code=200,
+                status_code=400,
                 content=f"Database {db_name} is not empty. Please drop collections first!",
             )
     else:
