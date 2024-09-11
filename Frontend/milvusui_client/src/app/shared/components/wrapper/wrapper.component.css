@@ -1,25 +1,20 @@
-.wrapper ::ng-deep .p-card {
-    border-radius: 0 !important;
-
+.nav-bar {
+  background-color: var(--highlight-bg);
+  border-bottom: 1px solid var(--surface-300);
 }
-.wrapper ::ng-deep .p-card-body {
-    padding: 0 !important;
-}
-.wrapper ::ng-deep .p-card-content {
-    padding: 0 !important;
-}
-.run-collor{
-    color: #60a5fa
-}
-::ng-deep .p-toggleButton{
-    background-color: inherit !important;
+.run-collor {
+  color: var(--milvus-blue);
 }
 
 .active-link {
-    border-bottom: 2px solid #60a5fa; 
-    transform: scale(1.05);
-    transition: border-bottom 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  border-bottom: 2px solid var(--milvus-blue);
+  transform: scale(1.05);
+  transition: border-bottom 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
-.nav-link{
-    text-decoration: none;
+.nav-link {
+  text-decoration: none;
+}
+.milvus-icon {
+  font-size: 1.3rem;
+  color: var(--milvus-blue);
 }

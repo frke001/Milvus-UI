@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { enviroment } from '../../../../environments/enviroment';
 import { first, Observable } from 'rxjs';
 import { DatabaseResponse } from '../../../models/DatabaseResponse';
+import { DatabaseRequest } from '../../../models/DatabaseRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +18,9 @@ export class DatabaseManagemnetService {
 
   deleteDatabase(dbName: string | undefined): Observable<string>{
     return this.httpClient.delete<string>(enviroment.apiUrl + 'databases/' + dbName).pipe(first());
+  }
+
+  createDatabase(request: DatabaseRequest): Observable<string>{
+    return this.httpClient.post<string>(enviroment.apiUrl + 'databases', request).pipe(first());
   }
 }

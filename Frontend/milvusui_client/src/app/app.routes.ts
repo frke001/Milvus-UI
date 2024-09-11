@@ -33,13 +33,14 @@ export const routes: Routes = [
         title: 'Databases Overview',
       },
       {
-        path: 'collections',
+        path: 'databases/:db_name/collections',
         loadComponent: () =>
           import(
             '../app/features/milvus-management/pages/collections-overview/collections-overview.component'
           ).then((r) => CollectionsOverviewComponent),
         title: 'Collections Overview',
-      },
+      }
+     
     ],
   },
   {

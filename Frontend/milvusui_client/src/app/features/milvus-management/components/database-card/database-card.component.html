@@ -1,17 +1,20 @@
-<div
-  class="w-64 cursor-pointer border border-transparent hover:border-milvus-blue transition-all duration-300"
->
-  <p-card class="">
+<div class="w-64 cursor-pointer" (click)="onDatabaseClick(database?.name)">
+  <p-card styleClass="my-card">
     <ng-template pTemplate="header">
       <div class="p-5 pb-0">
         <div class="flex justify-between items-center h-[28px]">
           <i class="pi pi-database" style="font-size: 1.3rem"></i>
           @if (database?.name !== "default") {
           <!-- [ngClass] = "{'disabled:opacity-15' : database?.name === 'default'}" -->
-          <span 
+          <span
             class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
-          (click)="onDeleteClick(database?.name)">
+            (click)="onDeleteClick(database?.name)"
+          >
+            @if(this.uiService.isLoading && database?.name == nameToDelete){
+            <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+            }@else {
             <i class="pi pi-trash rounded-full" style="font-size: 1rem"></i>
+            }
           </span>
           }
         </div>
@@ -21,7 +24,9 @@
       </div>
     </ng-template>
     <div>
-      <p class="m-0 text-sm font-extralight">Collections</p>
+      <p class="m-0 text-sm font-extralight text-muted-foreground">
+        Collections
+      </p>
       <p class="m-0 font-semibold text-xl text-milvus-blue">
         {{ database?.collections_count }}
       </p>

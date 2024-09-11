@@ -75,7 +75,7 @@ export class ConnectionPageComponent implements OnInit {
         .subscribe({
           next: (res: string) => {
             this.router.navigate(['features']);
-            localStorage.setItem("connected", JSON.stringify(this.form.value.uri))
+            sessionStorage.setItem("connected", JSON.stringify(this.form.value.uri))
             // this.messageService.add({
             //   severity: 'success',
             //   summary: 'Success',

@@ -1,19 +1,43 @@
-<div (click)="showDialog()"  class="w-64 h-[164px] cursor-pointer flex flex-col justify-center rounded-md items-center border border-milvus-blue bg-blue-200">
-    <i class="pi pi-plus" style="font-size: 1.5rem;"></i>
-    <p class="mb-0 ">Create database</p>
-    <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <span class="p-text-secondary block mb-5">Update your information.</span>
-        <div class="flex align-items-center gap-3 mb-3">
-            <label for="username" class="font-semibold w-6rem">Username</label>
-            <input pInputText id="username" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="email" class="font-semibold w-6rem">Email</label>
-            <input pInputText id="email" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex justify-content-end gap-2">
-            <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
-            <p-button label="Save" (onClick)="visible = false" />
-        </div>
-    </p-dialog>
+<div
+  (click)="showDialog()"
+  class="w-64 h-[174px] cursor-pointer flex flex-col justify-center rounded-xl items-center add-card"
+>
+  <i class="pi pi-plus" style="font-size: 1.5rem"></i>
+  <p class="mb-0">Create database</p>
 </div>
+<p-dialog
+  header="Create Database"
+  [(visible)]="visible"
+  [style]="{ width: '25rem' }"
+>
+  <form [formGroup]="form" class="flex flex-col gap-5">
+    <div class="flex flex-col gap-2 w-full mt-4">
+      <label for="uri" class="text-base">Database Name</label>
+      <input
+        class="w-full"
+        pInputText
+        id="uri"
+        aria-describedby="username-help"
+        placeholder="Enter name"
+        formControlName="name"
+        required
+        variant="outlined"
+      />
+      @if (this.form.controls['name'].hasError("required") &&
+      this.form.get('name')?.dirty) {
+      <small class="p-error">Name is required!</small>
+      }@if (this.form.controls['name'].hasError('maxlength')) {
+      <small class="p-error">Name is too long!</small>
+      }
+    </div>
+    <div class="w-full flex justify-end gap-2 mt-6">
+      <p-button label="Cancel" severity="secondary" (onClick)="onClose()" />
+      <p-button
+        type="submit"
+        [disabled]="form.invalid"
+        label="Save"
+        (onClick)="onSave()"
+      />
+    </div>
+  </form>
+</p-dialog>

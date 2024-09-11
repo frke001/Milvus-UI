@@ -69,7 +69,7 @@ export class WrapperComponent implements OnInit {
   ];
 
   ngOnInit() {
-    let temp = localStorage.getItem('connected');
+    let temp = sessionStorage.getItem('connected');
     if (temp) {
       this.uri = JSON.parse(temp);
     }
@@ -81,7 +81,7 @@ export class WrapperComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res: string) => {
-          localStorage.removeItem('connected');
+          sessionStorage.removeItem('connected');
           this.router.navigate(['']);
         },
         error: (err) => {

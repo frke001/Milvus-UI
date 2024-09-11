@@ -12,7 +12,7 @@
       (onDeleteDatabase)="onDelete($event)"
     ></app-database-card>
     }
-    <app-add-db-card></app-add-db-card>
+    <app-add-db-card (onDatabaseAdd)="onDatabaseAdd($event)"></app-add-db-card>
   </div>
   }
 </div>

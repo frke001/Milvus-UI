@@ -8,12 +8,18 @@ import { DatabaseResponse } from '../../../../models/DatabaseResponse';
 import { DatabaseManagemnetService } from '../../services/database-managemnet.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UiService } from '../../../../core/services/ui.service';
-import { AddDbCardComponent } from "../../components/add-db-card/add-db-card.component";
+import { AddDbCardComponent } from '../../components/add-db-card/add-db-card.component';
 
 @Component({
   selector: 'app-databases-overview',
   standalone: true,
-  imports: [ToastModule, ButtonModule, DatabaseCardComponent, AddDbCardComponent, AddDbCardComponent],
+  imports: [
+    ToastModule,
+    ButtonModule,
+    DatabaseCardComponent,
+    AddDbCardComponent,
+    AddDbCardComponent,
+  ],
   templateUrl: './databases-overview.component.html',
   styleUrl: './databases-overview.component.css',
   providers: [],
@@ -32,11 +38,11 @@ export class DatabasesOverviewComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res: DatabaseResponse[]) => {
-          this.messageService.add({
-            severity: 'info',
-            summary: 'Success',
-            detail: 'Successfully fetched databases',
-          });
+          // this.messageService.add({
+          //   severity: 'info',
+          //   summary: 'Success',
+          //   detail: 'Successfully fetched databases',
+          // });
           this.databases = res;
           this.customSort();
         },
@@ -58,7 +64,13 @@ export class DatabasesOverviewComponent implements OnInit {
     });
   }
   onDelete(event: string) {
-    debugger
-    this.databases = this.databases.filter(el => el.name !== event);
+    debugger;
+    this.databases = this.databases.filter((el) => el.name !== event);
+  }
+  onDatabaseAdd(event: string) {
+    this.databases.push({
+      name: event,
+      collections_count: 0,
+    });
   }
 }

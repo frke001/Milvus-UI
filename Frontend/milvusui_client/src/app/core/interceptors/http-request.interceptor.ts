@@ -11,7 +11,6 @@ import { UiService } from '../services/ui.service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
-  
   private uiService: UiService = inject(UiService);
   private requests: HttpRequest<any>[] = [];
 
@@ -19,13 +18,19 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    
     this.uiService.enableLoader();
     this.requests.push(req);
     return new Observable((observer) => {
       const subscription = next
         .handle(req)
-        .pipe(finalize(() => this.uiService.disableLoader()))
+        .pipe(
+          finalize(() => {
+            setTimeout(() => {
+              this.uiService.disableLoader();
+            },2000);
+            // this.uiService.disableLoader();
+          })
+        )
         .subscribe({
           next: (event) => {
             if (event instanceof HttpResponse) {

@@ -1,3 +1,8 @@
-::ng-deep .p-card-content {
-    padding: 0 !important;
+.my-card{
+    background-color: var(--highlight-bg);
+    border: 1px solid var(--surface-300);
+    /* border: 0.5px solid transparent;*/
+}
+.my-card:hover{
+    border: 1px solid var(--milvus-blue);
 }

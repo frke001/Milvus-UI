@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 export const ConnectGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const uiService = inject(UiService);
-  let connected = localStorage.getItem('connected');
+  let connected = sessionStorage.getItem('connected');
   if (!connected) {
     router.navigate([''])
   }
