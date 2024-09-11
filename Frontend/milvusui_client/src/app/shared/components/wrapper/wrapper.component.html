@@ -28,9 +28,9 @@
             </div>
             <div class="hidden sm:block">
               <a
-                routerLink="/features/databases/default/collections"
+                [routerLink]="['/features/databases', uiService.getSelectedDb(), 'collections']"
                 routerLinkActive="active-link"
-                [routerLinkActiveOptions]="{ exact: true }"
+                [routerLinkActiveOptions]="{ exact: false }"
                 class="flex items-center gap-2 cursor-pointer text-current nav-link pb-1 transition-colors duration-300"
               >
                 <i
@@ -56,7 +56,7 @@
             </div>
             <div class="sm:hidden block">
               <a
-                routerLink="/features/collections"
+                [routerLink]="['/features/databases', uiService.getSelectedDb(), 'collections']"
                 routerLinkActive="active-link"
                 [routerLinkActiveOptions]="{ exact: true }"
                 [pTooltip]="menuCollectionTooltip"
@@ -69,10 +69,6 @@
               </a>
             </div>
           </div>
-
-          <!-- <p-menubar [model]="items" class="w-full">
-
-         </p-menubar> -->
         </div>
         <div class="flex items-center gap-5 mr-3">
           <span

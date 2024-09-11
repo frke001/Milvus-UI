@@ -1,0 +1,49 @@
+<div class="w-64 cursor-pointer">
+  <p-card styleClass="my-card">
+    <ng-template pTemplate="header">
+      <div class="p-5 pb-0">
+        <div class="flex justify-between items-center h-[28px]">
+          <i class="pi pi-server" style="font-size: 1.3rem"></i>
+          <span
+            class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
+          >
+            @if(this.uiService.isLoading && collection?.name == nameToDelete){
+            <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+            }@else {
+            <i class="pi pi-trash rounded-full" style="font-size: 1rem"></i>
+            }
+          </span>
+        </div>
+        <div>
+          <p class="mb-0 mt-2 font-medium truncate">{{ collection?.name }}</p>
+        </div>
+      </div>
+    </ng-template>
+    <div class="flex justify-between">
+      <div>
+        <p class="m-0 text-sm font-extralight text-muted-foreground">
+          Row Count
+        </p>
+        <p class="m-0 font-semibold text-xl text-milvus-blue">
+          {{ collection?.row_count }}
+        </p>
+      </div>
+      <div>
+        <p class="m-0 text-sm font-extralight text-muted-foreground">State</p>
+        <div class="mt-1">
+          @if(collection?.loaded){
+          <div class="flex items-center gap-1 text-green-400">
+            <i class="pi pi-circle-on" style="font-size: 10px"></i>
+            <p class="m-0">loaded</p>
+          </div>
+          }@else {
+          <div class="flex items-center gap-1 text-gray-400">
+            <i class="pi pi-circle-on" style="font-size: 10px"></i>
+            <p class="m-0">unloaded</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>

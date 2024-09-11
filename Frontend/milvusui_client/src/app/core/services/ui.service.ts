@@ -8,12 +8,15 @@ import { MessageService } from 'primeng/api';
 export class UiService {
   activetheme: string = 'dark';
   private _loading: WritableSignal<number> = signal<number>(0);
-
-  getTheme() {
+  //private selectedDb: string = "default";
+  constructor(){
+    sessionStorage.setItem("selectedDb", JSON.stringify("default"));
+  }
+  getTheme(): string {
     return this.activetheme;
   }
 
-  setTheme(theme: string) {
+  setTheme(theme: string): void {
     let themeLink = document.getElementById('app-theme') as HTMLLinkElement;
 
     if (themeLink) {
@@ -33,5 +36,17 @@ export class UiService {
 
   public get isLoading(): boolean {
     return this._loading() > 0;
+  }
+
+  getSelectedDb(): string{
+    let selectedDb = sessionStorage.getItem("selectedDb");
+    if(selectedDb)
+      return JSON.parse(selectedDb);
+    else
+      return "default";
+    //return this.selectedDb;
+  }
+  setSelectedDb(dbName: string): void{
+    sessionStorage.setItem("selectedDb", JSON.stringify(dbName));
   }
 }

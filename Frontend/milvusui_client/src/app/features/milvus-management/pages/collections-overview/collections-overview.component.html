@@ -1,1 +1,17 @@
-<p>collections-overview works!</p>
+<div class="w-full">
+  <div>
+    <p class="m-0 text-2xl font-medium">Collections</p>
+  </div>
+
+  @if(uiService.isLoading){
+  <div class="w-full flex justify-center mt-10">
+    <i class="pi pi-spin pi-spinner" style="font-size: 6rem"></i>
+  </div>
+  }@else {
+  <div class="flex flex-wrap mt-5 gap-7">
+    @for (collection of collections; track $index) {
+    <app-collection-card [collection]="collection"></app-collection-card>
+    }
+  </div>
+  }
+</div>

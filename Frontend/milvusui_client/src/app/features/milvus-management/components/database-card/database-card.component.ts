@@ -40,6 +40,7 @@ export class DatabaseCardComponent {
   private messageService: MessageService = inject(MessageService);
   nameToDelete: string | undefined = '';
   private router: Router = inject(Router);
+
   onDeleteClick(dbName: string | undefined) {
     this.nameToDelete = dbName;
     this.dbManagementService.deleteDatabase(dbName).subscribe({
@@ -60,7 +61,10 @@ export class DatabaseCardComponent {
       },
     });
   }
-  onDatabaseClick(db_name: string | undefined) {
-    if (db_name) this.router.navigate(['features','databases', db_name, 'collections']);
+  onDatabaseClick(dbName: string | undefined) {
+    if (dbName) {
+      this.uiService.setSelectedDb(dbName);
+      this.router.navigate(['features', 'databases', dbName, 'collections']);
+    }
   }
 }

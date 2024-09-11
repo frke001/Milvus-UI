@@ -67,7 +67,6 @@ export class WrapperComponent implements OnInit {
       icon: 'pi pi-home',
     },
   ];
-
   ngOnInit() {
     let temp = sessionStorage.getItem('connected');
     if (temp) {
