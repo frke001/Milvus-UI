@@ -1,0 +1,15 @@
+.add-card{
+    border: 1px dashed var(--milvus-blue);
+}
+.fixed-dropdown{
+    width: 100% !important;
+}
+
+.my-dialog .p-dialog-content{
+    overflow-y: hidden;
+    min-height: 300px;
+    padding-bottom: 0;
+}
+.my-tooltip{
+    position: fixed;
+}

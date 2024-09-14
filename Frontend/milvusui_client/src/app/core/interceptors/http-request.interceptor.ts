@@ -20,15 +20,24 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     this.uiService.enableLoader();
     this.requests.push(req);
+    let connection = JSON.parse(sessionStorage.getItem('connected') || 'null');
+    if (connection) {
+      req = req.clone({
+        setHeaders: {
+          'Connection-String': connection,
+        },
+      });
+    }
+
     return new Observable((observer) => {
       const subscription = next
         .handle(req)
         .pipe(
           finalize(() => {
-            setTimeout(() => {
-              this.uiService.disableLoader();
-            },2000);
-            // this.uiService.disableLoader();
+            // setTimeout(() => {
+            //   this.uiService.disableLoader();
+            // },2000);
+            this.uiService.disableLoader();
           })
         )
         .subscribe({

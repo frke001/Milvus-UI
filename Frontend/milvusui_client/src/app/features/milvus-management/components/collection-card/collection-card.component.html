@@ -6,6 +6,7 @@
           <i class="pi pi-server" style="font-size: 1.3rem"></i>
           <span
             class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
+            (click)="onCollectionDelete(collection?.name)"
           >
             @if(this.uiService.isLoading && collection?.name == nameToDelete){
             <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>

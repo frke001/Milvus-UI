@@ -44,7 +44,6 @@ export class UiService {
       return JSON.parse(selectedDb);
     else
       return "default";
-    //return this.selectedDb;
   }
   setSelectedDb(dbName: string): void{
     sessionStorage.setItem("selectedDb", JSON.stringify(dbName));

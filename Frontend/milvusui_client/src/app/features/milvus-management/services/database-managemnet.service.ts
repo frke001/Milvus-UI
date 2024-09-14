@@ -13,14 +13,13 @@ export class DatabaseManagemnetService {
   
 
   getAllDatabases(): Observable<DatabaseResponse[]>{
-    return this.httpClient.get<DatabaseResponse[]>(enviroment.apiUrl + 'databases');
+    return this.httpClient.get<DatabaseResponse[]>(enviroment.apiUrl + 'databases').pipe(first());
   }
 
   deleteDatabase(dbName: string | undefined): Observable<string>{
     return this.httpClient.delete<string>(enviroment.apiUrl + 'databases/' + dbName).pipe(first());
   }
-
   createDatabase(request: DatabaseRequest): Observable<string>{
-    return this.httpClient.post<string>(enviroment.apiUrl + 'databases', request).pipe(first());
+    return this.httpClient.post<string>(enviroment.apiUrl + 'databases', request);
   }
 }

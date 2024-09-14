@@ -17,11 +17,12 @@ import { MessageService } from 'primeng/api';
 import { NgClass, NgStyle } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { Router } from '@angular/router';
+import { StopPropagationDirective } from '../../../../shared/directives/stop-propagation.directive';
 
 @Component({
   selector: 'app-database-card',
   standalone: true,
-  imports: [CardModule, NgClass, NgStyle, RippleModule],
+  imports: [CardModule, NgClass, NgStyle, RippleModule, StopPropagationDirective],
   templateUrl: './database-card.component.html',
   styleUrl: './database-card.component.css',
   encapsulation: ViewEncapsulation.None,
@@ -40,6 +41,7 @@ export class DatabaseCardComponent {
   private messageService: MessageService = inject(MessageService);
   nameToDelete: string | undefined = '';
   private router: Router = inject(Router);
+  @Input() databases: DatabaseResponse[] = [];
 
   onDeleteClick(dbName: string | undefined) {
     this.nameToDelete = dbName;
@@ -50,7 +52,8 @@ export class DatabaseCardComponent {
           summary: 'Success',
           detail: res,
         });
-        this.onDeleteDatabase.emit(dbName);
+        //this.onDeleteDatabase.emit(dbName);
+        // window.location.reload();
       },
       error: (err) => {
         this.messageService.add({
@@ -61,8 +64,11 @@ export class DatabaseCardComponent {
       },
     });
   }
+  
   onDatabaseClick(dbName: string | undefined) {
     if (dbName) {
+      console.log("Usao na klik");
+      
       this.uiService.setSelectedDb(dbName);
       this.router.navigate(['features', 'databases', dbName, 'collections']);
     }

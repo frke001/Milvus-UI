@@ -26,8 +26,10 @@
       @if (this.form.controls['name'].hasError("required") &&
       this.form.get('name')?.dirty) {
       <small class="p-error">Name is required!</small>
-      }@if (this.form.controls['name'].hasError('maxlength')) {
+      }@else if (this.form.controls['name'].hasError('maxlength')) {
       <small class="p-error">Name is too long!</small>
+      }@else if (this.form.controls['name'].hasError('pattern')){
+        <small class="p-error">Name can contain letters, numbers and underscore!</small>
       }
     </div>
     <div class="w-full flex justify-end gap-2 mt-6">

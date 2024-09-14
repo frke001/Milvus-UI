@@ -9,6 +9,7 @@ import { DatabaseManagemnetService } from '../../services/database-managemnet.se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UiService } from '../../../../core/services/ui.service';
 import { AddDbCardComponent } from '../../components/add-db-card/add-db-card.component';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-databases-overview',
@@ -19,6 +20,7 @@ import { AddDbCardComponent } from '../../components/add-db-card/add-db-card.com
     DatabaseCardComponent,
     AddDbCardComponent,
     AddDbCardComponent,
+    SkeletonModule,
   ],
   templateUrl: './databases-overview.component.html',
   styleUrl: './databases-overview.component.css',
@@ -33,27 +35,24 @@ export class DatabasesOverviewComponent implements OnInit {
   uiService: UiService = inject(UiService);
   databases: DatabaseResponse[] = [];
   ngOnInit(): void {
-    this.dbManagementService
-      .getAllDatabases()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (res: DatabaseResponse[]) => {
-          // this.messageService.add({
-          //   severity: 'info',
-          //   summary: 'Success',
-          //   detail: 'Successfully fetched databases',
-          // });
-          this.databases = res;
-          this.customSort();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-          });
-        },
-      });
+    this.dbManagementService.getAllDatabases().subscribe({
+      next: (res: DatabaseResponse[]) => {
+        // this.messageService.add({
+        //   severity: 'info',
+        //   summary: 'Success',
+        //   detail: 'Successfully fetched databases',
+        // });
+        this.databases = res;
+        this.customSort();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Error',
+          detail: err.error,
+        });
+      },
+    });
   }
 
   customSort() {
@@ -63,14 +62,14 @@ export class DatabasesOverviewComponent implements OnInit {
       return 0;
     });
   }
-  onDelete(event: string) {
-    debugger;
+  onDatabaseDeleted(event: string) {
+    console.log('Deleted database');
     this.databases = this.databases.filter((el) => el.name !== event);
   }
-  onDatabaseAdd(event: string) {
-    this.databases.push({
-      name: event,
-      collections_count: 0,
-    });
+
+  onNewDatabaseAdded(event: string) {
+    console.log("Primljeno: " + event);
+    
+    //this.databases = [...this.databases, { name: event, collections_count: 0 }];
   }
 }

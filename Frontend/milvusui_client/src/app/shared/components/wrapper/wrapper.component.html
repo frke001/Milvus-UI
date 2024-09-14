@@ -87,7 +87,11 @@
 
           <div class="sm:block hidden">
             <p class="m-0 text-sm">{{ this.uri }}</p>
-            <p class="m-0 text-sm run-collor">running</p>
+            @if (isRunning) {
+              <p class="m-0 text-sm run-collor">running</p>
+            }@else {
+              <p class="m-0 text-sm text-gray-400">disconnected</p>
+            }
           </div>
           <span
             class="cursor-pointer rounded-2xl"

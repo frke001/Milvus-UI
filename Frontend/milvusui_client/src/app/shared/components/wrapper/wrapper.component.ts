@@ -57,6 +57,7 @@ export class WrapperComponent implements OnInit {
   private connectionService: ConnectionService = inject(ConnectionService);
   private destroyRef = inject(DestroyRef);
   private router: Router = inject(Router);
+  isRunning: boolean = false;
   items: MenuItem[] = [
     {
       label: 'Databases',
@@ -71,6 +72,7 @@ export class WrapperComponent implements OnInit {
     let temp = sessionStorage.getItem('connected');
     if (temp) {
       this.uri = JSON.parse(temp);
+      this.isRunning = true;
     }
     this.primeNgConfig.ripple = true;
   }
@@ -84,11 +86,13 @@ export class WrapperComponent implements OnInit {
           this.router.navigate(['']);
         },
         error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-          });
+          // this.messageService.add({
+          //   severity: 'error',
+          //   summary: 'Error',
+          //   detail: err.error,
+          // });
+          sessionStorage.removeItem('connected');
+          this.router.navigate(['']);
         },
       });
   }

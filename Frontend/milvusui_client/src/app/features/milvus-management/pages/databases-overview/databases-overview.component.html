@@ -1,18 +1,28 @@
 <div class="w-full">
-  <p class="m-0 text-2xl font-medium">Databases</p>
-  @if(databases.length == 0 && uiService.isLoading){
-  <div class="w-full flex justify-center">
+  @if(uiService.isLoading){
+  <!-- <div class="w-full flex justify-center">
     <i class="pi pi-spin pi-spinner" style="font-size: 6rem"></i>
+  </div> -->
+  <p-skeleton width="160px" height="25px" />
+  <div class="flex flex-wrap mt-14 gap-7">
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
   </div>
   }@else {
-  <div class="flex flex-wrap mt-5 gap-7">
+  <p class="m-0 text-2xl font-medium my-4">Databases</p>
+  <div class="flex flex-wrap mt-14 gap-7">
     @for (database of databases; track $index) {
     <app-database-card
       [database]="database"
-      (onDeleteDatabase)="onDelete($event)"
+      (onDeleteDatabase)="onDatabaseDeleted($event)"
     ></app-database-card>
     }
-    <app-add-db-card (onDatabaseAdd)="onDatabaseAdd($event)"></app-add-db-card>
+    <app-add-db-card (onDatabaseAdd)="onNewDatabaseAdded($event)"></app-add-db-card>
   </div>
   }
 </div>

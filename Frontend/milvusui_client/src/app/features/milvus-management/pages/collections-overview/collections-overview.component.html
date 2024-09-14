@@ -1,17 +1,37 @@
 <div class="w-full">
-  <div>
-    <p class="m-0 text-2xl font-medium">Collections</p>
-  </div>
-
   @if(uiService.isLoading){
-  <div class="w-full flex justify-center mt-10">
-    <i class="pi pi-spin pi-spinner" style="font-size: 6rem"></i>
+  <div class="flex justify-between items-center">
+    <p-skeleton width="160px" height="25px" />
+    <p-skeleton width="270px" height="40px" />
+  </div>
+  <div class="flex flex-wrap mt-10 gap-7">
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
+    <p-skeleton width="254px" height="174px" />
   </div>
   }@else {
-  <div class="flex flex-wrap mt-5 gap-7">
+  <div class="flex justify-between items-center">
+    <p class="m-0 text-2xl font-medium">Collections</p>
+    <div class="flex flex-col">
+      <label for="uri" class="text-base">Select database</label>
+      <p-dropdown
+      [options]="databasesNames"
+      [(ngModel)]="selectedDb"
+      (ngModelChange)="onSelectionChange($event)"
+      styleClass="fixed-dropdown"
+    />
+    </div>
+    
+  </div>
+  <div class="flex flex-wrap mt-10 gap-7">
     @for (collection of collections; track $index) {
-    <app-collection-card [collection]="collection"></app-collection-card>
+    <app-collection-card [collection]="collection" (onCollDelete)="onCollectionDeleted($event)"></app-collection-card>
     }
+    <app-collection-add-card (onCollectionAdd)="onCollectionAdded($event)"></app-collection-add-card>
   </div>
   }
 </div>
