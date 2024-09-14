@@ -41,9 +41,10 @@ def create_db(request: DatabaseRequest, connection_string: str) -> bool:
                 content=f"Successfully created {request.name} database.",
             )
         except MilvusException as ex:
-            return JSONResponse(
+                return JSONResponse(
                 status_code=400, content=f"Database {request.name} already exists!"
             )
+           
     else:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
@@ -96,16 +97,11 @@ def get_all_collections(db_name: str, connection_string: str) -> list[str]:
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
-            print(db_name)
             milvus_client.using_database(db_name)
-            
             collections = milvus_client.list_collections()
-            print(collections)
             collections_info = []
             for col in collections:
-                print("Kolekcija: ", col)
                 col_inf = milvus_client.describe_collection(collection_name=col)
-                print("Milvus collection info: ", col_inf)
                 row_count = milvus_client.get_collection_stats(collection_name=col)
                 state = milvus_client.get_load_state(collection_name=col)
                 is_loaded = "Loaded" in str(state)
@@ -174,10 +170,16 @@ def create_collection(db_name: str, request: CollectionRequest, connection_strin
             # milvus_client.load_collection(
             #     collection_name=request.name, replica_number=1
             # )
+            row_count = milvus_client.get_collection_stats(collection_name=request.name)
+            state = milvus_client.get_load_state(collection_name=request.name)
+            is_loaded = "Loaded" in str(state)
+            result = CollectionResponse(
+                name=request.name,
+                row_count=row_count.get("row_count"),
+                loaded=is_loaded)
             return JSONResponse(
                 status_code=200,
-                content=f"Successfully created {request.name} collection.",
-            )
+                content = result.model_dump())
         except MilvusException as ex:
             return JSONResponse(status_code=400, content=f"{ex.message}")
 
