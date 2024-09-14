@@ -1,6 +1,6 @@
 from fastapi.responses import JSONResponse
 import numpy as np
-from pymilvus import Collection, DataType, MilvusException, connections, model
+from pymilvus import Collection, DataType, MilvusClient, MilvusException, connections, model
 from model import *
 import json
 
@@ -30,9 +30,9 @@ def disconnect():
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
         )
-def create_db(request: DatabaseRequest) -> bool:
+def create_db(request: DatabaseRequest, connection_string: str) -> bool:
     # milvus_client = MilvusClientSingleton.get_instance(uri_request.uri)
-    milvus_client = MilvusClientSingleton._instance
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.create_database(db_name=request.name)
@@ -50,10 +50,9 @@ def create_db(request: DatabaseRequest) -> bool:
         )
 
 
-def get_all_databases():
+def get_all_databases(connection_string: str):
     # milvus_client = MilvusClientSingleton.get_instance(uri_request)
-    milvus_client = MilvusClientSingleton._instance
-    print(milvus_client)
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         databases = milvus_client.list_databases()
         database_info = []
@@ -72,8 +71,8 @@ def get_all_databases():
         )
 
 
-def delete_db(db_name: str):
-    milvus_client = MilvusClientSingleton._instance
+def delete_db(db_name: str, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.drop_database(db_name=db_name)
@@ -91,16 +90,22 @@ def delete_db(db_name: str):
         )
 
 
-def get_all_collections(db_name: str) -> list[str]:
+def get_all_collections(db_name: str, connection_string: str) -> list[str]:
     # milvus_client = MilvusClientSingleton.get_instance(uri_request.uri)
-    milvus_client = MilvusClientSingleton._instance
+    # milvus_client = MilvusClientSingleton._instance
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
-            milvus_client.using_database(db_name=db_name)
+            print(db_name)
+            milvus_client.using_database(db_name)
+            
             collections = milvus_client.list_collections()
+            print(collections)
             collections_info = []
             for col in collections:
+                print("Kolekcija: ", col)
                 col_inf = milvus_client.describe_collection(collection_name=col)
+                print("Milvus collection info: ", col_inf)
                 row_count = milvus_client.get_collection_stats(collection_name=col)
                 state = milvus_client.get_load_state(collection_name=col)
                 is_loaded = "Loaded" in str(state)
@@ -115,7 +120,7 @@ def get_all_collections(db_name: str) -> list[str]:
         except MilvusException as ex:
             print(ex)
             return JSONResponse(
-                status_code=400, content=f"{db_name} database does not exists!"
+                status_code=400, content=f"{ex.message}"
             )
     else:
         return JSONResponse(
@@ -123,8 +128,8 @@ def get_all_collections(db_name: str) -> list[str]:
         )
 
 
-def create_collection(db_name: str, request: CollectionRequest):
-    milvus_client = MilvusClientSingleton._instance
+def create_collection(db_name: str, request: CollectionRequest, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -182,8 +187,8 @@ def create_collection(db_name: str, request: CollectionRequest):
         )
 
 
-def delete_collection(db_name: str, collection_name: str):
-    milvus_client = MilvusClientSingleton._instance
+def delete_collection(db_name: str, collection_name: str, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -207,8 +212,8 @@ def delete_collection(db_name: str, collection_name: str):
         )
 
 
-def load_collection(db_name: str, collection_name: str):
-    milvus_client = MilvusClientSingleton._instance
+def load_collection(db_name: str, collection_name: str, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -241,8 +246,8 @@ def load_collection(db_name: str, collection_name: str):
         )
 
 
-def get_collection_data(db_name: str, collection_name: str, limit: int, offset: int):
-    milvus_client = MilvusClientSingleton._instance
+def get_collection_data(db_name: str, collection_name: str, limit: int, offset: int, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -286,8 +291,8 @@ def get_collection_data(db_name: str, collection_name: str, limit: int, offset: 
         )
 
 
-def insert_data(db_name: str, collection_name: str, request: CollectionDataRequest):
-    milvus_client = MilvusClientSingleton._instance
+def insert_data(db_name: str, collection_name: str, request: CollectionDataRequest, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -329,8 +334,8 @@ def insert_data(db_name: str, collection_name: str, request: CollectionDataReque
         )
 
 
-def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDataRequest):
-    milvus_client = MilvusClientSingleton._instance
+def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDataRequest, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -352,8 +357,8 @@ def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDat
             status_code=400, content="Failed to connect to Milvus Server!"
         )
 
-def similarity_search(db_name: str, collection_name: str, request: SearchRequest):
-    milvus_client = MilvusClientSingleton._instance
+def similarity_search(db_name: str, collection_name: str, request: SearchRequest, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
@@ -367,7 +372,7 @@ def similarity_search(db_name: str, collection_name: str, request: SearchRequest
                 query_vector = sentence_transformer_ef.encode_documents(
                     [request.text]
                 )
-                index_info = milvus_client.describe_index(collection_name="Prva", index_name="vector_index")
+                index_info = milvus_client.describe_index(collection_name=collection_name, index_name="vector_index")
                 search_params = {
                     "metric_type": index_info.get("metric_type"), 
                 }
