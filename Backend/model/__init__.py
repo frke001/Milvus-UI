@@ -8,7 +8,7 @@ from model.collection_data_response import *
 from model.collection_data_request import *
 from model.delete_collcetion_data_request import *
 from model.search_request import *
-
+from model.collection_details import *
 __all__ = [
     "ConnectRequest",
     "MilvusClientSingleton",
@@ -20,5 +20,6 @@ __all__ = [
     "CollectionDataResponse",
     "CollectionDataRequest",
     "DeleteCollectionDataRequest",
-    "SearchRequest"
+    "SearchRequest",
+    "CollectionDetails"
 ]

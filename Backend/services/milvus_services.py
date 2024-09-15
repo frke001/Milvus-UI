@@ -213,7 +213,38 @@ def delete_collection(db_name: str, collection_name: str, connection_string: str
             status_code=400, content="Failed to connect to Milvus Server!"
         )
 
+def get_collection_details(db_name: str, collection_name: str, connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
+    if milvus_client is not None:
+       try:
+           milvus_client.using_database(db_name=db_name)
+           if milvus_client.has_collection(collection_name=collection_name):
+               row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+               state = milvus_client.get_load_state(collection_name=collection_name)
+               is_loaded = "Loaded" in str(state)
+               col_inf = milvus_client.describe_collection(collection_name=collection_name)
+               index_desc = milvus_client.describe_index(collection_name=collection_name, index_name="vector_index")
+               print(index_desc)
+               result = CollectionDetails(name=collection_name, row_count=row_count.get('row_count'),
+                                          loaded=is_loaded, index=index_desc, fields=col_inf.get('fields'))
+               return JSONResponse(
+                   status_code=200,
+                   content=result.model_dump(),
+               )
+           else:
+               return JSONResponse(
+                   status_code=400,
+                   content=f"Collection {collection_name} does not exist in {db_name} database!",
+               )
+       except MilvusException as ex:
+           return JSONResponse(status_code=400, content=f"{ex}")
 
+    else:
+        return JSONResponse(
+            status_code=400, content="Failed to connect to Milvus Server!"
+        )
+    
+    
 def load_collection(db_name: str, collection_name: str, connection_string: str):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
@@ -262,6 +293,8 @@ def get_collection_data(db_name: str, collection_name: str, limit: int, offset: 
                     offset=offset,
                 )
                 cleaned_result = convert_float32_to_float(query_result)
+                for record in cleaned_result:
+                    record['id'] = str(record['id'])
                 # total_records = milvus_client.get_collection_stats(
                 #     collection_name=collection_name
                 # )
@@ -342,7 +375,8 @@ def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDat
         try:
             milvus_client.using_database(db_name=db_name)
             if milvus_client.has_collection(collection_name=collection_name):
-                result = milvus_client.delete(collection_name=collection_name, ids=request.ids)
+                list_ids = list(map(int, request.ids))
+                result = milvus_client.delete(collection_name=collection_name, ids=list_ids)
                 return JSONResponse(
                     status_code=200,
                     content=f"Successfully deleted {result.get("delete_count")} records",
