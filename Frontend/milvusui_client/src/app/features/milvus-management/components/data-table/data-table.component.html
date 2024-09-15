@@ -1,0 +1,104 @@
+<div>
+  <div class="flex gap-3">
+    <p-button label="Insert" icon="pi pi-plus"> </p-button>
+    <p-button
+      label="Delete"
+      (onClick)="onDeleteData()"
+      severity="secondary"
+      icon="pi pi-trash"
+      [disabled]="selectedData.length == 0"
+    >
+    </p-button>
+  </div>
+  <div class="mt-4">
+    @if(data.data.length == 0){
+      <div class="flex justify-center items-center gap-3">
+        <i class="pi pi-plus-circle" style="font-size: 2rem"></i>
+      <p class=" font-medium text-lg">
+        Collection is empty. Insert some data.
+      </p>
+    </div>
+    }@else {
+    <p-table
+      [value]="data.data"
+      [paginator]="false"
+      styleClass="p-datatable-striped my-table"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [(selection)]="selectedData"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+          <th style="width: 25%">Id</th>
+          <th style="width: 25%">Vector</th>
+          <th style="width: 25%">Text</th>
+          <th style="width: 25%">Metadata</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-element let-columns="columns">
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="element" />
+          </td>
+          <td>
+            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+              <p class="m-0 text-md font-light truncate">{{ element.id }}</p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.id)"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+              <p class="m-0 text-md font-light truncate">
+                {{ element.vector }}
+              </p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.vector)"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+              <p class="m-0 text-md font-light truncate">{{ element.text }}</p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.text)"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+              <p class="m-0 text-md font-light truncate">
+                {{ element.metadata | json }}
+              </p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.metadata)"
+              ></i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <p-paginator
+    [rows]="10"
+      [totalRecords]="data.total_records"
+      [rowsPerPageOptions]="[5, 10, 15]"
+      (onPageChange)="onPageChange($event)">
+
+    </p-paginator>
+  }
+  </div>
+  <ng-template #copyTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Copy</p>
+    </div>
+  </ng-template>
+</div>

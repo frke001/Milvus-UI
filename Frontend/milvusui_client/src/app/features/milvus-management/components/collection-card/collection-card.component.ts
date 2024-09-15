@@ -5,16 +5,19 @@ import { UiService } from '../../../../core/services/ui.service';
 import { ChipModule } from 'primeng/chip';
 import { CollectionManagementService } from '../../services/collection-management.service';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { StopPropagationDirective } from '../../../../shared/directives/stop-propagation.directive';
 
 @Component({
   selector: 'app-collection-card',
   standalone: true,
-  imports: [CardModule, ChipModule],
+  imports: [CardModule, ChipModule, StopPropagationDirective],
   templateUrl: './collection-card.component.html',
   styleUrl: './collection-card.component.css',
   encapsulation: ViewEncapsulation.None,
 })
 export class CollectionCardComponent {
+
   @Input()
   collection: CollectionResponse | null = null;
   nameToDelete: string | undefined = '';
@@ -23,10 +26,12 @@ export class CollectionCardComponent {
     CollectionManagementService
   );
   messageService: MessageService = inject(MessageService);
-
   @Output() onCollDelete: EventEmitter<string> = new EventEmitter<string>();
+  router: Router = inject(Router);
+  isLoading: boolean = false;
 
   onCollectionDelete(collName: string | undefined) {
+    this.isLoading = true;
     this.nameToDelete = collName;
     this.collManagementService
       .deleteCollection(this.uiService.getSelectedDb(), collName!)
@@ -38,6 +43,7 @@ export class CollectionCardComponent {
             detail: res,
           });
           this.onCollDelete.emit(collName);
+          this.isLoading = false;
         },
         error: (err) => {
           this.messageService.add({
@@ -45,7 +51,13 @@ export class CollectionCardComponent {
             summary: 'Error',
             detail: err.error,
           });
+          this.isLoading = false;
         },
       });
+  }
+  onCollectionClick(collName: string | undefined) {
+    if(collName){
+      this.router.navigate(['features', 'databases', this.uiService.getSelectedDb(), 'collections', collName]);
+    }
   }
 }

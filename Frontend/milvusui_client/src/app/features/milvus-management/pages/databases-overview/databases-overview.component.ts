@@ -35,6 +35,7 @@ export class DatabasesOverviewComponent implements OnInit {
   uiService: UiService = inject(UiService);
   databases: DatabaseResponse[] = [];
   ngOnInit(): void {
+    this.uiService.enableLoader();
     this.dbManagementService.getAllDatabases().subscribe({
       next: (res: DatabaseResponse[]) => {
         // this.messageService.add({
@@ -44,6 +45,7 @@ export class DatabasesOverviewComponent implements OnInit {
         // });
         this.databases = res;
         this.customSort();
+        this.uiService.disableLoader();
       },
       error: (err) => {
         this.messageService.add({
@@ -51,6 +53,7 @@ export class DatabasesOverviewComponent implements OnInit {
           summary: 'Error',
           detail: err.error,
         });
+        this.uiService.disableLoader();
       },
     });
   }
@@ -63,13 +66,10 @@ export class DatabasesOverviewComponent implements OnInit {
     });
   }
   onDatabaseDeleted(event: string) {
-    console.log('Deleted database');
     this.databases = this.databases.filter((el) => el.name !== event);
   }
 
-  onNewDatabaseAdded(event: string) {
-    console.log("Primljeno: " + event);
-    
-    //this.databases = [...this.databases, { name: event, collections_count: 0 }];
+  onNewDatabaseAdded(event: string) {    
+    this.databases = [...this.databases, { name: event, collections_count: 0 }];
   }
 }

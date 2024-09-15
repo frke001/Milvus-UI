@@ -1,0 +1,211 @@
+<div class="w-full">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <div class="flex gap-2 items-center">
+          <p class="m-0 text-md font-light text-gray-400">Status</p>
+          <i
+            tooltipStyleClass="my-tooltip"
+            [pTooltip]="statusTooltip"
+            class="pi pi-info-circle cursor-pointer"
+            style="color: #60a5fa"
+            tooltipPosition="right"
+            appendTo="body"
+          ></i>
+        </div>
+  
+        <div
+          [pTooltip]="chipTooltip"
+          class="my-chip p-2 rounded-full w-fit cursor-pointer"
+          (click)="onLoadClick()"
+        >
+          @if(collection?.loaded){
+          <div class="flex items-center gap-1 text-green-400">
+            <i class="pi pi-circle-on" style="font-size: 10px"></i>
+            <p class="m-0">loaded</p>
+          </div>
+          }@else {
+          <div class="flex items-center gap-1 text-gray-400">
+            <i class="pi pi-circle-on" style="font-size: 10px"></i>
+            <p class="m-0">unloaded</p>
+          </div>
+          }
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <p class="m-0 text-md font-light text-gray-400">Row Count</p>
+        <p class="m-0 font-semibold text-xl text-milvus-blue">
+          {{ collection?.row_count }}
+        </p>
+      </div>
+      <div class="flex flex-col gap-2">
+        <p class="m-0 text-md font-light text-gray-400">Index Type</p>
+        <p class="m-0 font-semibold">
+          {{ collection?.index.index_type }}
+        </p>
+        <!-- <p class="m-0 text-md font-light text-gray-400">Index Parameters</p> -->
+        @if(collection?.index.index_type == "FLAT"){
+        <p class="m-0 font-semibold">No parameters needed for FLAT index type.</p>
+        }@else if(collection?.index.index_type == "IVF_FLAT" ||
+        collection?.index.index_type == "IVF_SQ8"){
+        <div class="flex gap-2 items-center">
+          <p class="m-0 text-sm font-light text-gray-400">nlist:</p>
+          <p class="m-0 text-sm">{{ collection?.index.nlist }}</p>
+        </div>
+        }@else if(collection?.index.index_type == "IVF_PQ"){
+        <div class="flex items-center">
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">nlist:</p>
+          <p class="m-0 text-sm mr-3">{{ collection?.index.nlist }}</p>
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">m:</p>
+          <p class="m-0 text-sm">{{ collection?.index.m }}</p>
+        </div>
+        }@else if(collection?.index.index_type == "HNSW"){
+        <div class="flex items-center">
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">M:</p>
+          <p class="m-0 text-sm mr-3">{{ collection?.index.M }}</p>
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">efConstruction:</p>
+          <p class="m-0 text-sm">{{ collection?.index.efConstruction }}</p>
+        </div>
+        }@else if(collection?.index.index_type == "SCANN"){
+        <div class="flex items-center">
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">nlist:</p>
+          <p class="m-0 text-sm mr-3">{{ collection?.index.nlist }}</p>
+          <p class="m-0 text-sm font-light text-gray-400 mr-1">with_raw_data:</p>
+          <p class="m-0 text-sm">{{ collection?.index.with_raw_data }}</p>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="flex flex-col gap-4">
+      <!-- <div class="flex flex-col gap-2">
+        
+      </div> -->
+      <div class="flex flex-col gap-2">
+        <p class="m-0 text-md font-light text-gray-400">Metric Type</p>
+        <div class="flex gap-2 items-center">
+          <p class="m-0 font-semibold">
+            {{ collection?.index.metric_type }}
+          </p>
+          <i
+            tooltipStyleClass="my-tooltip"
+            [pTooltip]="
+              collection?.index.metric_type == 'L2'
+                ? l2Tooltip
+                : collection?.index.metric_type == 'IP'
+                ? ipTooltip
+                : cosineTooltip
+            "
+            class="pi pi-info-circle cursor-pointer"
+            style="color: #60a5fa"
+            tooltipPosition="right"
+            appendTo="body"
+          ></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col gap-2 mt-4">
+    <p class="m-0 text-md font-light text-gray-400">Schema</p>
+    <p-table
+      [value]="fields"
+      styleClass="p-datatable-striped"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Index Name</th>
+          <th>Index Type</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-field let-columns="columns">
+        <tr>
+          <td>
+            <div class="flex items-center">
+              <p class="m-0 font-light text-sm mr-1">
+                {{ field.name }}
+              </p>
+              @if(field.is_primary){
+              <i class="pi pi-key text-milvus-blue mr-3"></i>
+              }
+              <p class="m-0 font-light text-sm">
+                {{ field.auto_id ? "auto id" : "" }}
+              </p>
+            </div>
+          </td>
+          <td>
+            <p class="m-0 font-light text-sm">
+              {{
+                field.type == 5
+                  ? "Int64"
+                  : field.type == 101
+                  ? "FloatVector(384)"
+                  : field.type == 21
+                  ? "VarChar(" + field.params.max_length + ")"
+                  : "JSON"
+              }}
+            </p>
+          </td>
+          <td>
+            @if(field.type == 101){
+            <p class="m-0 font-light text-sm">
+              {{ collection?.index.index_name }}
+            </p>
+            }
+          </td>
+          <td>
+            @if(field.type == 101){
+            <p class="m-0 font-light text-sm">
+              {{ collection?.index.index_type }}
+            </p>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <ng-template #chipTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        {{ collection?.loaded ? "Relese collection" : "Load collection" }}
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #statusTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        During the loading process of a collection, Milvus loads the
+        collection’s index file into memory. Conversely, when releasing a
+        collection, Milvus unloads the index file from memory. Before conducting
+        searches in a collection, ensure that the collection is loaded.
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #ipTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        IP (Inner Product) calculates the similarity between vectors based on
+        their inner product, commonly used for tasks where maximizing similarity
+        is important.
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #l2Tooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        L2 (Euclidean Distance) measures the straight-line (Euclidean) distance
+        between vectors, ideal for scenarios requiring geometric distance
+        measurement.
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #cosineTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        COSINE metric computes the cosine of the angle between two vectors,
+        focusing on direction rather than magnitude.
+      </p>
+    </div>
+  </ng-template>
+</div>

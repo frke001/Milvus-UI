@@ -1,0 +1,12 @@
+<div class="w-full">
+  @if(!collection?.loaded){
+  <div class="flex justify-center items-center gap-3">
+    <i class="pi pi-spinner-dotted" style="font-size: 2rem"></i>
+    <p class=" font-medium text-lg">
+      Please load collection into memory first.
+    </p>
+  </div>
+  }@else {
+    <app-data-table [collection]="collection" [dbName]="dbName"/>
+  }
+</div>

@@ -18,7 +18,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    this.uiService.enableLoader();
+    //this.uiService.enableLoader();
     this.requests.push(req);
     let connection = JSON.parse(sessionStorage.getItem('connected') || 'null');
     if (connection) {
@@ -37,7 +37,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
             // setTimeout(() => {
             //   this.uiService.disableLoader();
             // },2000);
-            this.uiService.disableLoader();
+            //this.uiService.disableLoader();
           })
         )
         .subscribe({

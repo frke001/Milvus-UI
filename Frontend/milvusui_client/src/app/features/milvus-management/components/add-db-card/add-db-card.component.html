@@ -39,7 +39,13 @@
         [disabled]="form.invalid"
         label="Save"
         (onClick)="onSave()"
-      />
+      >
+      <ng-template pTemplate="icon">
+        @if(this.isLoading){
+        <i class="pi pi-spinner pi-spin mr-2"></i>
+        }
+      </ng-template>
+    </p-button>
     </div>
   </form>
 </p-dialog>

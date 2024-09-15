@@ -52,6 +52,7 @@ export class CollectionsOverviewComponent implements OnInit, OnDestroy {
   );
 
   constructor() {
+    this.uiService.enableLoader();
     this.collections$ = this.route.params.pipe(
       switchMap((params) => {
         this.dbName = params['db_name'];
@@ -70,6 +71,7 @@ export class CollectionsOverviewComponent implements OnInit, OnDestroy {
     this.collections$.subscribe({
       next: (res: CollectionResponse[]) => {
         this.collections = res;
+        this.uiService.disableLoader();
       },
       error: (err) => {
         this.messageService.add({
@@ -77,6 +79,7 @@ export class CollectionsOverviewComponent implements OnInit, OnDestroy {
           summary: 'Error',
           detail: err.error,
         });
+        this.uiService.disableLoader();
       },
     });
     this.dbManagementService.getAllDatabases().subscribe({

@@ -1,0 +1,58 @@
+<div class="w-full">
+  <!-- @if(uiService.isLoading){
+  <div class="flex flex-col gap-6">
+    <p-skeleton width="100px" height="25px" />
+    <p-skeleton width="200px" height="35px" />
+  </div>
+  <div class="mt-5">
+    <p-skeleton width="100%" height="500px" />
+  </div>
+  } @else { -->
+
+  <div class="flex flex-col gap-6">
+    <div class="flex gap-3 cursor-pointer" (click)="onBackClick()">
+      <i
+        class="pi pi-arrow-left text-milvus-blue"
+        style="font-size: 1.5rem"
+      ></i>
+      <p class="m-0 text-md">Back</p>
+    </div>
+
+    <div class="flex gap-3 items-center">
+      <i class="pi pi-server" style="font-size: 1.3rem"></i>
+      <p class="m-0 text-2xl font-medium">{{ collection?.name }}</p>
+    </div>
+  </div>
+  <div class="mt-5">
+    <p-tabView styleClass="my-tab-view">
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-2 text-milvus-blue">
+            <i class="pi pi-info-circle"></i>
+            <p class="m-0 text-md font-medium sm:block hidden">Overview</p>
+          </div>
+        </ng-template>
+        <app-collection-overview [collection]="collection" [dbName]="dbName" />
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-2 text-milvus-blue">
+            <i class="pi pi-database"></i>
+            <p class="m-0 text-md font-medium sm:block hidden">Data</p>
+          </div>
+        </ng-template>
+        <app-collection-data [collection]="collection" [dbName]="dbName" />
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-2 text-milvus-blue">
+            <i class="pi pi-search"></i>
+            <p class="m-0 text-md font-medium sm:block hidden">Vector Search</p>
+          </div>
+        </ng-template>
+        <app-collection-search />
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <!-- } -->
+</div>

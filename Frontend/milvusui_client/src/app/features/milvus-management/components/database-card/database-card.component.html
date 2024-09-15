@@ -10,7 +10,7 @@
             class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
             (click)="onDeleteClick(database?.name)" appStopPropagation
           >
-            @if(this.uiService.isLoading && database?.name == nameToDelete){
+            @if(this.isLoading && database?.name == nameToDelete){
             <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
             }@else {
             <i class="pi pi-trash rounded-full" style="font-size: 1rem"></i>

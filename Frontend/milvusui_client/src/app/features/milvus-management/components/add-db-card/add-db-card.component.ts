@@ -47,12 +47,14 @@ export class AddDbCardComponent {
   private messageService: MessageService = inject(MessageService);
   private router: Router = inject(Router);
   @Output() onDatabaseAdd = new EventEmitter<string>();
+  isLoading: boolean = false;
 
   showDialog() {
     this.visible = true;
     this.form.reset();
   }
   onSave() {
+    this.isLoading = true;
     if (this.form.value.name)
       this.dbManagementService
         .createDatabase({
@@ -61,7 +63,6 @@ export class AddDbCardComponent {
         .subscribe({
           next: (res: string) => {
             this.visible = false;
-            this.onDatabaseAdd.emit("EE");
             this.messageService.add({
               severity: 'info',
               summary: 'Success',
@@ -69,9 +70,8 @@ export class AddDbCardComponent {
             });
             if (this.form.value.name) {
               this.onDatabaseAdd.emit(this.form.value.name);
-              //this.router.navigate(['features']);
             }
-            // window.location.reload();
+            this.isLoading = false;
           },
           error: (err) => {
             this.messageService.add({
@@ -79,11 +79,7 @@ export class AddDbCardComponent {
               summary: 'Error',
               detail: err.error,
             });
-          },
-          complete: () => {
-            if (this.form.value.name) {
-              this.onDatabaseAdd.emit(this.form.value.name);
-            }
+            this.isLoading = false;
           },
         });
   }

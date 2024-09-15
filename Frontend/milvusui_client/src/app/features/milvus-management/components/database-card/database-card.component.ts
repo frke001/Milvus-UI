@@ -42,8 +42,10 @@ export class DatabaseCardComponent {
   nameToDelete: string | undefined = '';
   private router: Router = inject(Router);
   @Input() databases: DatabaseResponse[] = [];
+  isLoading: boolean = false;
 
   onDeleteClick(dbName: string | undefined) {
+    this.isLoading = true;
     this.nameToDelete = dbName;
     this.dbManagementService.deleteDatabase(dbName).subscribe({
       next: (res: string) => {
@@ -52,8 +54,8 @@ export class DatabaseCardComponent {
           summary: 'Success',
           detail: res,
         });
-        //this.onDeleteDatabase.emit(dbName);
-        // window.location.reload();
+        this.onDeleteDatabase.emit(dbName);
+        this.isLoading = false;
       },
       error: (err) => {
         this.messageService.add({
@@ -61,14 +63,13 @@ export class DatabaseCardComponent {
           summary: 'Error',
           detail: err.error,
         });
+        this.isLoading = false;
       },
     });
   }
   
   onDatabaseClick(dbName: string | undefined) {
     if (dbName) {
-      console.log("Usao na klik");
-      
       this.uiService.setSelectedDb(dbName);
       this.router.navigate(['features', 'databases', dbName, 'collections']);
     }

@@ -4,6 +4,7 @@ import { WrapperComponent } from './shared/components/wrapper/wrapper.component'
 import { DatabasesOverviewComponent } from '../app/features/milvus-management/pages/databases-overview/databases-overview.component';
 import { ConnectGuard } from './guards/connect.guard';
 import { CollectionsOverviewComponent } from '../app/features/milvus-management/pages/collections-overview/collections-overview.component';
+import { CollectionDetailsComponent } from '../app/features/milvus-management/pages/collection-details/collection-details.component';
 
 export const routes: Routes = [
   {
@@ -39,6 +40,14 @@ export const routes: Routes = [
             '../app/features/milvus-management/pages/collections-overview/collections-overview.component'
           ).then((r) => CollectionsOverviewComponent),
         title: 'Collections Overview',
+      },
+      {
+        path: 'databases/:db_name/collections/:coll_name',
+        loadComponent: () =>
+          import(
+            '../app/features/milvus-management/pages/collection-details/collection-details.component'
+          ).then((r) => CollectionDetailsComponent),
+        title: 'Collection Details',
       }
      
     ],

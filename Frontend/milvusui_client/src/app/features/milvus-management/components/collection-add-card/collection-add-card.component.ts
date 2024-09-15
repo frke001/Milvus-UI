@@ -67,12 +67,13 @@ export class CollectionAddCardComponent {
   @Output()
   onCollectionAdd: EventEmitter<CollectionResponse> =
     new EventEmitter<CollectionResponse>();
-
+  isLoading: boolean = false;
   showDialog() {
     this.visible = true;
     this.form.reset();
   }
   onSave() {
+    this.isLoading = true;
     if (this.form.valid) {
       let request = {
         name: this.form.value.name!,
@@ -89,6 +90,7 @@ export class CollectionAddCardComponent {
             detail: `Collection ${this.form.value.name!} created successfully.`,
           });
           this.onCollectionAdd.emit(res);
+          this.isLoading = false;
         },
         error: (err) => {
           this.messageService.add({
@@ -96,6 +98,7 @@ export class CollectionAddCardComponent {
             summary: 'Error',
             detail: err.error,
           });
+          this.isLoading = false;
         },
       });
     }
