@@ -16,6 +16,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
+import { DeleteDataRequest } from '../../../../models/DeleteDataRequest';
+import { UiService } from '../../../../core/services/ui.service';
 
 @Component({
   selector: 'app-data-table',
@@ -31,7 +33,6 @@ import { PaginatorModule } from 'primeng/paginator';
   styleUrl: './data-table.component.css',
 })
 export class DataTableComponent implements OnInit {
-
   @Input()
   collection: CollectionDetails | undefined;
   @Input()
@@ -52,6 +53,7 @@ export class DataTableComponent implements OnInit {
   messageService: MessageService = inject(MessageService);
   clipboard: Clipboard = inject(Clipboard);
   selectedData: CollectionData[] = [];
+  uiService: UiService = inject(UiService);
 
   ngOnInit(): void {
     if (this.dbName && this.collection?.loaded) this.loadData();
@@ -88,24 +90,38 @@ export class DataTableComponent implements OnInit {
     });
   }
   onDeleteData() {
-    if (this.dbName && this.collection?.loaded) 
-    this.collManagementService
-    .deleteData(this.dbName, this.collection.name, this.selectedData.map(el => el.id))
-    .subscribe({
-      next: (res: string) => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Success',
-          detail: res,
+    if (this.dbName && this.collection?.loaded) {
+      let request: DeleteDataRequest = {
+        ids: this.selectedData.map((el) => el.id)
+      }
+      this.collManagementService
+        .deleteData(
+          this.dbName,
+          this.collection.name,
+          request
+        )
+        .subscribe({
+          next: (res: number) => {
+            this.data.data = this.data.data.filter(
+              (item) => !request.ids.includes(item.id)
+            );
+            this.selectedData = [];
+            if(this.collection)
+              this.collection.row_count = this.collection.row_count - res;
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Success',
+              detail: `Successfully deleted ${res} records`,
+            });
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Error',
+              detail: err.error,
+            });
+          },
         });
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Error',
-          detail: err.error,
-        });
-      },
-    });
+    }
   }
 }

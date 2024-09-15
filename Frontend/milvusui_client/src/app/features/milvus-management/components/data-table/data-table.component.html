@@ -12,11 +12,9 @@
   </div>
   <div class="mt-4">
     @if(data.data.length == 0){
-      <div class="flex justify-center items-center gap-3">
-        <i class="pi pi-plus-circle" style="font-size: 2rem"></i>
-      <p class=" font-medium text-lg">
-        Collection is empty. Insert some data.
-      </p>
+    <div class="flex justify-center items-center gap-3">
+      <i class="pi pi-plus-circle" style="font-size: 2rem"></i>
+      <p class="font-medium text-lg">Collection is empty. Insert some data.</p>
     </div>
     }@else {
     <p-table
@@ -41,7 +39,9 @@
             <p-tableCheckbox [value]="element" />
           </td>
           <td>
-            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
               <p class="m-0 text-md font-light truncate">{{ element.id }}</p>
               <i
                 class="pi pi-copy cursor-pointer"
@@ -51,7 +51,9 @@
             </div>
           </td>
           <td>
-            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
               <p class="m-0 text-md font-light truncate">
                 {{ element.vector }}
               </p>
@@ -63,7 +65,9 @@
             </div>
           </td>
           <td>
-            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
               <p class="m-0 text-md font-light truncate">{{ element.text }}</p>
               <i
                 class="pi pi-copy cursor-pointer"
@@ -73,7 +77,9 @@
             </div>
           </td>
           <td>
-            <div class="flex gap-2 items-center xl:max-w-[300px] md:max-w-[200px] max-w-[100px]">
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
               <p class="m-0 text-md font-light truncate">
                 {{ element.metadata | json }}
               </p>
@@ -88,13 +94,13 @@
       </ng-template>
     </p-table>
     <p-paginator
-    [rows]="10"
+      [rows]="10"
       [totalRecords]="data.total_records"
       [rowsPerPageOptions]="[5, 10, 15]"
-      (onPageChange)="onPageChange($event)">
-
+      (onPageChange)="onPageChange($event)"
+    >
     </p-paginator>
-  }
+    }
   </div>
   <ng-template #copyTooltip>
     <div class="flex align-items-center">

@@ -6,6 +6,7 @@ import { enviroment } from '../../../../environments/enviroment';
 import { CollectionRequest } from '../../../models/CollectionRequest';
 import { CollectionDetails } from '../../../models/CollectionDetails';
 import { CollectionDataResponse } from '../../../models/CollectionDataResponse';
+import { DeleteDataRequest } from '../../../models/DeleteDataRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -79,11 +80,13 @@ export class CollectionManagementService {
   deleteData(
     dbName: string,
     collName: string,
-    listIds: string[]
-  ): Observable<string> {
+    request: DeleteDataRequest
+  ): Observable<number> {
     return this.httpClient
-      .delete<string>(
-        enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`
+      .delete<number>(
+        enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`, {
+          body: request
+        }
       )
       .pipe(first());
   }
