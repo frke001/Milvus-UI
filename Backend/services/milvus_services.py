@@ -102,13 +102,17 @@ def get_all_collections(db_name: str, connection_string: str) -> list[str]:
             collections_info = []
             for col in collections:
                 col_inf = milvus_client.describe_collection(collection_name=col)
-                row_count = milvus_client.get_collection_stats(collection_name=col)
+                all_records = milvus_client.query(
+                    collection_name=col, filter="id >= 0"
+                )
+                #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+                row_count = len(all_records)
                 state = milvus_client.get_load_state(collection_name=col)
                 is_loaded = "Loaded" in str(state)
                 collections_info.append(
                     CollectionResponse(
                         name=col_inf.get("collection_name"),
-                        row_count=row_count.get("row_count"),
+                        row_count=row_count,
                         loaded=is_loaded,
                     ).model_dump()
                 )
@@ -170,12 +174,16 @@ def create_collection(db_name: str, request: CollectionRequest, connection_strin
             # milvus_client.load_collection(
             #     collection_name=request.name, replica_number=1
             # )
-            row_count = milvus_client.get_collection_stats(collection_name=request.name)
+            all_records = milvus_client.query(
+                    collection_name=request.name, filter="id >= 0"
+                )
+            #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+            row_count = len(all_records)
             state = milvus_client.get_load_state(collection_name=request.name)
             is_loaded = "Loaded" in str(state)
             result = CollectionResponse(
                 name=request.name,
-                row_count=row_count.get("row_count"),
+                row_count=row_count,
                 loaded=is_loaded)
             return JSONResponse(
                 status_code=200,
@@ -219,13 +227,17 @@ def get_collection_details(db_name: str, collection_name: str, connection_string
        try:
            milvus_client.using_database(db_name=db_name)
            if milvus_client.has_collection(collection_name=collection_name):
-               row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+               all_records = milvus_client.query(
+                    collection_name=collection_name, filter="id >= 0"
+                )
+               #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+               row_count = len(all_records)
                state = milvus_client.get_load_state(collection_name=collection_name)
                is_loaded = "Loaded" in str(state)
                col_inf = milvus_client.describe_collection(collection_name=collection_name)
                index_desc = milvus_client.describe_index(collection_name=collection_name, index_name="vector_index")
                print(index_desc)
-               result = CollectionDetails(name=collection_name, row_count=row_count.get('row_count'),
+               result = CollectionDetails(name=collection_name, row_count=row_count,
                                           loaded=is_loaded, index=index_desc, fields=col_inf.get('fields'))
                return JSONResponse(
                    status_code=200,
@@ -379,7 +391,7 @@ def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDat
                 result = milvus_client.delete(collection_name=collection_name, ids=list_ids)
                 return JSONResponse(
                     status_code=200,
-                    content=f"Successfully deleted {result.get("delete_count")} records",
+                    content=result.get("delete_count"),
                 )
             else:
                 return JSONResponse(
