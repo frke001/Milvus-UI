@@ -35,7 +35,9 @@ export class CollectionDetailsComponent implements OnInit {
       switchMap((params) => {
         this.dbName = params['db_name']
         this.collName = params['coll_name'];
+        
         if (this.collName && this.dbName) {
+          this.uiService.setSelectedDb(this.dbName);
           return this.collManagementService.getCollectionDetails(this.dbName, this.collName);
         } else {
           return EMPTY;

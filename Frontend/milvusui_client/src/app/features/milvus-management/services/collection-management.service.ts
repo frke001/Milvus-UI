@@ -5,10 +5,15 @@ import { CollectionResponse } from '../../../models/CollectionResponse';
 import { enviroment } from '../../../../environments/enviroment';
 import { CollectionRequest } from '../../../models/CollectionRequest';
 import { CollectionDetails } from '../../../models/CollectionDetails';
-import { CollectionData, CollectionDataResponse } from '../../../models/CollectionDataResponse';
+import {
+  CollectionData,
+  CollectionDataResponse,
+} from '../../../models/CollectionDataResponse';
 import { DeleteDataRequest } from '../../../models/DeleteDataRequest';
 import { CollectionInsertDataRequest } from '../../../models/CollectionInsertDataRequest';
 import { CollectionDataInsertResponse } from '../../../models/CollectionDataInsertResponse';
+import { SearchRequest } from '../../../models/SearchRequest';
+import { SearchResponse } from '../../../models/SearchResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -86,16 +91,38 @@ export class CollectionManagementService {
   ): Observable<number> {
     return this.httpClient
       .delete<number>(
-        enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`, {
-          body: request
+        enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`,
+        {
+          body: request,
         }
       )
       .pipe(first());
   }
 
-  insertData(dbName: string,
+  insertData(
+    dbName: string,
     collName: string,
-    request: CollectionInsertDataRequest): Observable<CollectionData>{
-      return this.httpClient.post<CollectionData>(enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`, request).pipe(first());
-    }
+    request: CollectionInsertDataRequest
+  ): Observable<CollectionData> {
+    return this.httpClient
+      .post<CollectionData>(
+        enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`,
+        request
+      )
+      .pipe(first());
+  }
+
+  search(
+    dbName: string,
+    collName: string,
+    request: SearchRequest
+  ): Observable<SearchResponse[]> {
+    return this.httpClient
+      .post<SearchResponse[]>(
+        enviroment.apiUrl +
+          `databases/${dbName}/collections/${collName}/data/search`,
+        request
+      )
+      .pipe(first());
+  }
 }

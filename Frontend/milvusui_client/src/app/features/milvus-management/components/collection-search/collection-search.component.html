@@ -1,1 +1,154 @@
-<p>collection-search works!</p>
+<div class="w-full">
+  @if(!collection?.loaded){
+  <div class="flex justify-center items-center gap-3">
+    <i class="pi pi-spinner-dotted" style="font-size: 2rem"></i>
+    <p class="font-medium text-lg">Please load collection into memory first.</p>
+  </div>
+  }@else {
+  <div class="flex items-center w-full justify-between gap-5">
+    <div class="flex flex-col gap-2 flex-1">
+      <label for="search">Search Term</label>
+      <p-inputGroup>
+        <input
+          id="search"
+          type="text"
+          pInputText
+          placeholder="Enter search term"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+        />
+        <button
+          type="button"
+          pButton
+          icon="pi pi-search"
+          class="p-button"
+          (click)="onSearch()"
+        ></button>
+      </p-inputGroup>
+    </div>
+    <div class="flex flex-col gap-2 justify-end">
+      <div class="flex items-center gap-2">
+        <label for="topk">Top K</label>
+        <i
+          tooltipStyleClass="my-tooltip"
+          [pTooltip]="topKTooltip"
+          class="pi pi-info-circle cursor-pointer"
+          style="color: #60a5fa"
+          tooltipPosition="right"
+          appendTo="body"
+        ></i>
+      </div>
+
+      <input
+        id="topk"
+        type="number"
+        pInputText
+        placeholder="Enter top K"
+        [(ngModel)]="topK"
+        max="10"
+        min="1"
+      />
+    </div>
+  </div>
+  <div class="w-full mt-5">
+    @if (isLoading) {
+    <div class="flex justify-center items-center gap-3">
+      <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem"></i>
+      <p class="font-medium text-lg">Searching</p>
+    </div>
+    }@else { @if(searchResult.length == 0){
+    <div class="flex justify-center items-center gap-3">
+      <i class="pi pi-search" style="font-size: 1.5rem"></i>
+      <p class="font-medium text-lg">Start your vector search</p>
+    </div>
+    }@else {
+
+    <p-table
+      [value]="searchResult"
+      [paginator]="false"
+      styleClass="p-datatable-striped"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 25%">Id</th>
+          <th style="width: 25%">Text</th>
+          <th style="width: 25%">Distance</th>
+          <th style="width: 25%">Metadata</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-element let-columns="columns">
+        <tr>
+          <td>
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
+              <p class="m-0 text-md font-light truncate">{{ element.id }}</p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.id)"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
+              <p class="m-0 text-md font-light truncate">
+                {{ element.entity.text }}
+              </p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.entity.text)"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
+              <p class="m-0 text-md font-light truncate">
+                {{ element.distance.toFixed(4) }}
+              </p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.distance.toFixed(4))"
+              ></i>
+            </div>
+          </td>
+          <td>
+            <div
+              class="flex gap-2 items-center 2xl:max-w-[300px] xl:max-w-[250px] md:max-w-[200px] max-w-[100px]"
+            >
+              <p class="m-0 text-md font-light truncate">
+                {{ element.entity.metadata | json }}
+              </p>
+              <i
+                class="pi pi-copy cursor-pointer"
+                [pTooltip]="copyTooltip"
+                (click)="onCopy(element.entity.metadata)"
+              ></i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    } }
+  </div>
+  }
+  <ng-template #topKTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        Number of similar data to query. Default value: 5
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #copyTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">Copy</p>
+    </div>
+  </ng-template>
+</div>
