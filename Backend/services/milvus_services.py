@@ -1,6 +1,13 @@
 from fastapi.responses import JSONResponse
 import numpy as np
-from pymilvus import Collection, DataType, MilvusClient, MilvusException, connections, model
+from pymilvus import (
+    Collection,
+    DataType,
+    MilvusClient,
+    MilvusException,
+    connections,
+    model,
+)
 from model import *
 import json
 
@@ -11,11 +18,12 @@ def connect(request: ConnectRequest) -> bool:
         return JSONResponse(
             status_code=200, content="Successfully connected to Milvus Server."
         )
-        
+
     except MilvusException as ex:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
         )
+
 
 def disconnect():
     milvus_client = MilvusClientSingleton._instance
@@ -23,13 +31,15 @@ def disconnect():
         milvus_client.close()
         MilvusClientSingleton._instance = None
         return JSONResponse(
-                status_code=200,
-                content="Successfully disconnected.",
+            status_code=200,
+            content="Successfully disconnected.",
         )
     else:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
         )
+
+
 def create_db(request: DatabaseRequest, connection_string: str) -> bool:
     # milvus_client = MilvusClientSingleton.get_instance(uri_request.uri)
     milvus_client = MilvusClient(uri=connection_string)
@@ -41,10 +51,10 @@ def create_db(request: DatabaseRequest, connection_string: str) -> bool:
                 content=f"Successfully created {request.name} database.",
             )
         except MilvusException as ex:
-                return JSONResponse(
+            return JSONResponse(
                 status_code=400, content=f"Database {request.name} already exists!"
             )
-           
+
     else:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
@@ -102,26 +112,20 @@ def get_all_collections(db_name: str, connection_string: str) -> list[str]:
             collections_info = []
             for col in collections:
                 col_inf = milvus_client.describe_collection(collection_name=col)
-                all_records = milvus_client.query(
-                    collection_name=col, filter="id >= 0"
-                )
-                #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
-                row_count = len(all_records)
                 state = milvus_client.get_load_state(collection_name=col)
                 is_loaded = "Loaded" in str(state)
+                row_count = milvus_client.get_collection_stats(collection_name=col)
                 collections_info.append(
                     CollectionResponse(
                         name=col_inf.get("collection_name"),
-                        row_count=row_count,
+                        row_count=row_count.get("row_count"),
                         loaded=is_loaded,
                     ).model_dump()
                 )
             return JSONResponse(status_code=200, content=collections_info)
         except MilvusException as ex:
             print(ex)
-            return JSONResponse(
-                status_code=400, content=f"{ex.message}"
-            )
+            return JSONResponse(status_code=400, content=f"{ex.message}")
     else:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
@@ -174,20 +178,13 @@ def create_collection(db_name: str, request: CollectionRequest, connection_strin
             # milvus_client.load_collection(
             #     collection_name=request.name, replica_number=1
             # )
-            all_records = milvus_client.query(
-                    collection_name=request.name, filter="id >= 0"
-                )
-            #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
-            row_count = len(all_records)
+            
             state = milvus_client.get_load_state(collection_name=request.name)
             is_loaded = "Loaded" in str(state)
             result = CollectionResponse(
-                name=request.name,
-                row_count=row_count,
-                loaded=is_loaded)
-            return JSONResponse(
-                status_code=200,
-                content = result.model_dump())
+                name=request.name, row_count=0, loaded=is_loaded
+            )
+            return JSONResponse(status_code=200, content=result.model_dump())
         except MilvusException as ex:
             return JSONResponse(status_code=400, content=f"{ex.message}")
 
@@ -221,42 +218,52 @@ def delete_collection(db_name: str, collection_name: str, connection_string: str
             status_code=400, content="Failed to connect to Milvus Server!"
         )
 
+
 def get_collection_details(db_name: str, collection_name: str, connection_string: str):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
-       try:
-           milvus_client.using_database(db_name=db_name)
-           if milvus_client.has_collection(collection_name=collection_name):
-               all_records = milvus_client.query(
-                    collection_name=collection_name, filter="id >= 0"
+        try:
+            milvus_client.using_database(db_name=db_name)
+            if milvus_client.has_collection(collection_name=collection_name):
+                # all_records = milvus_client.query(
+                #     collection_name=collection_name, filter="id >= 0"
+                # )
+                row_count = milvus_client.get_collection_stats(collection_name=collection_name)
+                # row_count = len(all_records)
+                state = milvus_client.get_load_state(collection_name=collection_name)
+                is_loaded = "Loaded" in str(state)
+                col_inf = milvus_client.describe_collection(
+                    collection_name=collection_name
                 )
-               #row_count = milvus_client.get_collection_stats(collection_name=collection_name)
-               row_count = len(all_records)
-               state = milvus_client.get_load_state(collection_name=collection_name)
-               is_loaded = "Loaded" in str(state)
-               col_inf = milvus_client.describe_collection(collection_name=collection_name)
-               index_desc = milvus_client.describe_index(collection_name=collection_name, index_name="vector_index")
-               print(index_desc)
-               result = CollectionDetails(name=collection_name, row_count=row_count,
-                                          loaded=is_loaded, index=index_desc, fields=col_inf.get('fields'))
-               return JSONResponse(
-                   status_code=200,
-                   content=result.model_dump(),
-               )
-           else:
-               return JSONResponse(
-                   status_code=400,
-                   content=f"Collection {collection_name} does not exist in {db_name} database!",
-               )
-       except MilvusException as ex:
-           return JSONResponse(status_code=400, content=f"{ex}")
+                index_desc = milvus_client.describe_index(
+                    collection_name=collection_name, index_name="vector_index"
+                )
+                print(index_desc)
+                result = CollectionDetails(
+                    name=collection_name,
+                    row_count=row_count.get('row_count'),
+                    loaded=is_loaded,
+                    index=index_desc,
+                    fields=col_inf.get("fields"),
+                )
+                return JSONResponse(
+                    status_code=200,
+                    content=result.model_dump(),
+                )
+            else:
+                return JSONResponse(
+                    status_code=400,
+                    content=f"Collection {collection_name} does not exist in {db_name} database!",
+                )
+        except MilvusException as ex:
+            return JSONResponse(status_code=400, content=f"{ex}")
 
     else:
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
         )
-    
-    
+
+
 def load_collection(db_name: str, collection_name: str, connection_string: str):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
@@ -291,7 +298,9 @@ def load_collection(db_name: str, collection_name: str, connection_string: str):
         )
 
 
-def get_collection_data(db_name: str, collection_name: str, limit: int, offset: int, connection_string: str):
+def get_collection_data(
+    db_name: str, collection_name: str, limit: int, offset: int, connection_string: str
+):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
@@ -306,7 +315,7 @@ def get_collection_data(db_name: str, collection_name: str, limit: int, offset: 
                 )
                 cleaned_result = convert_float32_to_float(query_result)
                 for record in cleaned_result:
-                    record['id'] = str(record['id'])
+                    record["id"] = str(record["id"])
                 # total_records = milvus_client.get_collection_stats(
                 #     collection_name=collection_name
                 # )
@@ -338,7 +347,12 @@ def get_collection_data(db_name: str, collection_name: str, limit: int, offset: 
         )
 
 
-def insert_data(db_name: str, collection_name: str, request: CollectionDataRequest, connection_string: str):
+def insert_data(
+    db_name: str,
+    collection_name: str,
+    request: CollectionDataRequest,
+    connection_string: str,
+):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
@@ -353,17 +367,24 @@ def insert_data(db_name: str, collection_name: str, request: CollectionDataReque
                 vector_embedding = sentence_transformer_ef.encode_documents(
                     [request.text]
                 )
+                
                 data = {
                     "text": request.text,
                     "vector": vector_embedding[0],
                     "metadata": request.metadata,
                 }
-
                 insert_result = milvus_client.insert(
                     collection_name=collection_name,
                     data=data,
                 )
-                cleaned_data = convert_float32_to_float(data)
+                
+                result = {
+                    "id": str(insert_result.get('ids')[0]),
+                    "text": request.text,
+                    "vector": vector_embedding[0],
+                    "metadata": request.metadata,
+                }
+                cleaned_data = convert_float32_to_float(result)
                 return JSONResponse(
                     status_code=200,
                     content=cleaned_data,
@@ -381,14 +402,21 @@ def insert_data(db_name: str, collection_name: str, request: CollectionDataReque
         )
 
 
-def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDataRequest, connection_string: str):
+def delete_data(
+    db_name: str,
+    collection_name: str,
+    request: DeleteCollectionDataRequest,
+    connection_string: str,
+):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
             milvus_client.using_database(db_name=db_name)
             if milvus_client.has_collection(collection_name=collection_name):
                 list_ids = list(map(int, request.ids))
-                result = milvus_client.delete(collection_name=collection_name, ids=list_ids)
+                result = milvus_client.delete(
+                    collection_name=collection_name, ids=list_ids
+                )
                 return JSONResponse(
                     status_code=200,
                     content=result.get("delete_count"),
@@ -405,7 +433,10 @@ def delete_data(db_name: str, collection_name: str, request: DeleteCollectionDat
             status_code=400, content="Failed to connect to Milvus Server!"
         )
 
-def similarity_search(db_name: str, collection_name: str, request: SearchRequest, connection_string: str):
+
+def similarity_search(
+    db_name: str, collection_name: str, request: SearchRequest, connection_string: str
+):
     milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         try:
@@ -417,20 +448,19 @@ def similarity_search(db_name: str, collection_name: str, request: SearchRequest
                         device="cpu",
                     )
                 )
-                query_vector = sentence_transformer_ef.encode_documents(
-                    [request.text]
+                query_vector = sentence_transformer_ef.encode_documents([request.text])
+                index_info = milvus_client.describe_index(
+                    collection_name=collection_name, index_name="vector_index"
                 )
-                index_info = milvus_client.describe_index(collection_name=collection_name, index_name="vector_index")
                 search_params = {
-                    "metric_type": index_info.get("metric_type"), 
+                    "metric_type": index_info.get("metric_type"),
                 }
                 search_result = milvus_client.search(
-                    
                     collection_name=collection_name,
                     data=[query_vector[0]],
                     search_params=search_params,
                     output_fields=["id", "text", "metadata"],
-                    limit=request.limit
+                    limit=request.limit,
                 )
                 return JSONResponse(
                     status_code=200,
@@ -447,8 +477,8 @@ def similarity_search(db_name: str, collection_name: str, request: SearchRequest
         return JSONResponse(
             status_code=400, content="Failed to connect to Milvus Server!"
         )
-    
-    
+
+
 def convert_float32_to_float(obj):
     if isinstance(obj, np.ndarray):
         return obj.astype(float).tolist()
