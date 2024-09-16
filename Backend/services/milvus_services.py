@@ -462,9 +462,12 @@ def similarity_search(
                     output_fields=["id", "text", "metadata"],
                     limit=request.limit,
                 )
+                for sublist in search_result:
+                    for item in sublist:
+                        item['id'] = str(item['id'])
                 return JSONResponse(
                     status_code=200,
-                    content=search_result,
+                    content=search_result[0],
                 )
             else:
                 return JSONResponse(
