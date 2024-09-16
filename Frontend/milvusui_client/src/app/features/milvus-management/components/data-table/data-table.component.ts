@@ -190,6 +190,7 @@ export class DataTableComponent implements OnInit {
           this.isLoading = false;
           if(this.data.data.length < this.limit)
             this.data.data = [...this.data.data, res];
+          this.keyValuePairs.clear();
         },
         error: (err) => {
           this.messageService.add({
@@ -198,6 +199,7 @@ export class DataTableComponent implements OnInit {
             detail: err.error,
           });
           this.isLoading = false;
+          this.keyValuePairs.clear();
         },
       })
     }

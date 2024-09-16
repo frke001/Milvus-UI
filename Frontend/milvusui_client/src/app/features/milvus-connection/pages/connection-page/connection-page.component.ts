@@ -68,6 +68,7 @@ export class ConnectionPageComponent implements OnInit {
 
   connect() {
     this.form.disable();
+    this.uiService.enableLoader();
     if (this.form.value.uri) {
       this.connectionService
         .connectToMilvus({ uri: this.form.value.uri })
@@ -82,6 +83,7 @@ export class ConnectionPageComponent implements OnInit {
             //   detail: res,
             // });
             this.form.enable();
+            this.uiService.disableLoader();
           },
           error: (err) => {
             this.form.enable();
@@ -91,6 +93,7 @@ export class ConnectionPageComponent implements OnInit {
               summary: 'Error',
               detail: err.error,
             });
+            this.uiService.disableLoader();
           },
         });
     }

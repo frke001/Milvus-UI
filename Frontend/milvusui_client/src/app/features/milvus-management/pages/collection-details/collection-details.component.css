@@ -1,6 +1,15 @@
-/* .my-tab-view .p-tabview-nav-content{
-    overflow-y: auto;
-} */
+.my-tab-view .p-tabview-nav{
+    /* border-bottom: 1px solid var(--highlight-bg);
+    border-collapse: collapse; */
+    border: none;
+} 
+.my-tab-view .p-tabview-nav-content{
+    border-bottom: 1px solid var(--highlight-bg);
+    border-collapse: collapse;
+} 
+.my-tab-view .p-tabview-nav li .p-tabview-nav-link{
+    border-bottom: 1px solid var(--highlight-bg);
+}
 /*.my-tab-view .p-tabview-nav-content{
     background-color: var(--highlight-bg) !important;
-} */
+}*/
