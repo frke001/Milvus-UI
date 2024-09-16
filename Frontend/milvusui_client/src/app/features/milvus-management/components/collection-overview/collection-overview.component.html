@@ -33,7 +33,18 @@
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="m-0 text-md font-light text-gray-400">Row Count</p>
+        <div class="flex gap-2 items-center">
+          <p class="m-0 text-md font-light text-gray-400">Row Count</p>
+          <i
+            tooltipStyleClass="my-tooltip"
+            [pTooltip]="rowCountTooltip"
+            class="pi pi-info-circle cursor-pointer"
+            style="color: #60a5fa"
+            tooltipPosition="right"
+            appendTo="body"
+          ></i>
+        </div>
+        
         <p class="m-0 font-semibold text-xl text-milvus-blue">
           {{ collection?.row_count }}
         </p>
@@ -205,6 +216,15 @@
       <p class="m-0 text-xs">
         COSINE metric computes the cosine of the angle between two vectors,
         focusing on direction rather than magnitude.
+      </p>
+    </div>
+  </ng-template>
+  <ng-template #rowCountTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        This count is an approximation and may be slightly delayed due to the unique mechanisms of Milvus. 
+        The actual count may vary and is updated periodically. 
+        Please note that this number should be used as a reference and not as an exact count.
       </p>
     </div>
   </ng-template>

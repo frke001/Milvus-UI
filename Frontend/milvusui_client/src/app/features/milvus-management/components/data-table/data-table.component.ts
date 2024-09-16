@@ -1,4 +1,10 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import {
   TableModule,
   TablePageEvent,
@@ -18,6 +24,26 @@ import { ButtonModule } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
 import { DeleteDataRequest } from '../../../../models/DeleteDataRequest';
 import { UiService } from '../../../../core/services/ui.service';
+import { EMPTY, switchMap } from 'rxjs';
+import { SkeletonModule } from 'primeng/skeleton';
+import { DialogModule } from 'primeng/dialog';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextModule } from 'primeng/inputtext';
+import { CollectionInsertDataRequest } from '../../../../models/CollectionInsertDataRequest';
+import { CollectionDataInsertResponse } from '../../../../models/CollectionDataInsertResponse';
+interface KeyValuePair {
+  key: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-data-table',
@@ -28,19 +54,24 @@ import { UiService } from '../../../../core/services/ui.service';
     TooltipModule,
     ButtonModule,
     PaginatorModule,
+    SkeletonModule,
+    DialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    InputTextModule,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class DataTableComponent implements OnInit {
   @Input()
   collection: CollectionDetails | undefined;
   @Input()
   dbName: string | undefined;
-
   limit: number = 10;
   offset: number = 0;
-
   data: CollectionDataResponse = {
     data: [],
     limit: 10,
@@ -54,9 +85,19 @@ export class DataTableComponent implements OnInit {
   clipboard: Clipboard = inject(Clipboard);
   selectedData: CollectionData[] = [];
   uiService: UiService = inject(UiService);
+  visible: boolean = false;
+  isLoading: boolean = false;
+  fb: FormBuilder = inject(FormBuilder);
+  form = new FormGroup({
+    text: new FormControl<string | null>(null, [
+      Validators.required,
+      Validators.maxLength(2500),
+    ]),
+    keyValuePairs: this.fb.array<any>([]),
+  });
 
   ngOnInit(): void {
-    if (this.dbName && this.collection?.loaded) this.loadData();
+    this.loadData();
   }
   loadData() {
     if (this.dbName && this.collection?.loaded) {
@@ -78,7 +119,7 @@ export class DataTableComponent implements OnInit {
   }
   onPageChange(event: any) {
     this.limit = event.rows;
-    this.offset = event.first / event.rows;
+    this.offset = event.first;
     this.loadData();
   }
   onCopy(text: any) {
@@ -92,22 +133,21 @@ export class DataTableComponent implements OnInit {
   onDeleteData() {
     if (this.dbName && this.collection?.loaded) {
       let request: DeleteDataRequest = {
-        ids: this.selectedData.map((el) => el.id)
-      }
+        ids: this.selectedData.map((el) => el.id),
+      };
       this.collManagementService
-        .deleteData(
-          this.dbName,
-          this.collection.name,
-          request
-        )
+        .deleteData(this.dbName, this.collection.name, request)
         .subscribe({
           next: (res: number) => {
             this.data.data = this.data.data.filter(
               (item) => !request.ids.includes(item.id)
             );
             this.selectedData = [];
-            if(this.collection)
-              this.collection.row_count = this.collection.row_count - res;
+            this.data.total_records -= res;
+            if (this.data.data.length === 0) {
+              this.offset = this.offset + this.limit;
+              this.loadData();
+            }
             this.messageService.add({
               severity: 'info',
               summary: 'Success',
@@ -123,5 +163,61 @@ export class DataTableComponent implements OnInit {
           },
         });
     }
+  }
+  showDialog() {
+    this.visible = true;
+    this.form.reset();
+  }
+  onSave() {
+    this.isLoading = true;
+    if (this.form.valid && this.dbName && this.collection) {
+      const formData = this.form.value;
+      const keyValuePairs = this.keyValuePairs?.controls ?? [];
+      const entries = keyValuePairs.map((element: any) => [element.value.key, element.value.value]);
+      const metadata = Object.fromEntries(entries);
+      const requestBody: CollectionInsertDataRequest = {
+        text: formData.text!,
+        metadata: metadata,
+      };
+      this.collManagementService.insertData(this.dbName, this.collection.name, requestBody).subscribe({
+        next: (res: CollectionData) => {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Success',
+            detail: `Successfully inserted data`,
+          });
+          this.visible = false;
+          this.isLoading = false;
+          if(this.data.data.length < this.limit)
+            this.data.data = [...this.data.data, res];
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Error',
+            detail: err.error,
+          });
+          this.isLoading = false;
+        },
+      })
+    }
+  }
+  onClose() {
+    this.visible = false;
+  }
+  get keyValuePairs(): FormArray {
+    return this.form.get('keyValuePairs') as FormArray;
+  }
+
+  addKeyValuePair(): void {
+    const keyValueFormGroup = this.fb.group({
+      key: ['', Validators.required],
+      value: ['', Validators.required],
+    });
+    this.keyValuePairs.push(keyValueFormGroup);
+  }
+
+  removeKeyValuePair(index: number): void {
+    this.keyValuePairs.removeAt(index);
   }
 }

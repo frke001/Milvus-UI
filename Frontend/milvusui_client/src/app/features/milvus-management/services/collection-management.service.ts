@@ -5,8 +5,10 @@ import { CollectionResponse } from '../../../models/CollectionResponse';
 import { enviroment } from '../../../../environments/enviroment';
 import { CollectionRequest } from '../../../models/CollectionRequest';
 import { CollectionDetails } from '../../../models/CollectionDetails';
-import { CollectionDataResponse } from '../../../models/CollectionDataResponse';
+import { CollectionData, CollectionDataResponse } from '../../../models/CollectionDataResponse';
 import { DeleteDataRequest } from '../../../models/DeleteDataRequest';
+import { CollectionInsertDataRequest } from '../../../models/CollectionInsertDataRequest';
+import { CollectionDataInsertResponse } from '../../../models/CollectionDataInsertResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -90,4 +92,10 @@ export class CollectionManagementService {
       )
       .pipe(first());
   }
+
+  insertData(dbName: string,
+    collName: string,
+    request: CollectionInsertDataRequest): Observable<CollectionData>{
+      return this.httpClient.post<CollectionData>(enviroment.apiUrl + `databases/${dbName}/collections/${collName}/data`, request).pipe(first());
+    }
 }

@@ -44,9 +44,11 @@ export class CollectionDetailsComponent implements OnInit {
     );
   }
   ngOnInit(): void {
+    this.uiService.enableLoader();
     this.collection$.subscribe({
       next: (res: CollectionDetails) => {
         this.collection = res;
+        this.uiService.disableLoader();
       },
       error: (err) => {
         this.messageService.add({
@@ -54,6 +56,7 @@ export class CollectionDetailsComponent implements OnInit {
           summary: 'Error',
           detail: err.error,
         });
+        this.uiService.disableLoader();
       }
     })
   }
