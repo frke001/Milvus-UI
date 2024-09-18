@@ -14,7 +14,7 @@ import json
 
 def connect(request: ConnectRequest) -> bool:
     try:
-        milvus_client = MilvusClientSingleton(uri=request.uri)
+        milvus_client = MilvusClient(uri=request.uri)
         return JSONResponse(
             status_code=200, content="Successfully connected to Milvus Server."
         )
@@ -25,8 +25,8 @@ def connect(request: ConnectRequest) -> bool:
         )
 
 
-def disconnect():
-    milvus_client = MilvusClientSingleton._instance
+def disconnect(connection_string: str):
+    milvus_client = MilvusClient(uri=connection_string)
     if milvus_client is not None:
         milvus_client.close()
         MilvusClientSingleton._instance = None
@@ -155,7 +155,7 @@ def create_collection(db_name: str, request: CollectionRequest, connection_strin
             schema.add_field(
                 field_name="text",
                 datatype=DataType.VARCHAR,
-                max_length=2500,
+                max_length=1000,
                 description="Original text",
             )
             schema.add_field(

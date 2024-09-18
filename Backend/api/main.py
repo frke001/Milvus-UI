@@ -22,8 +22,11 @@ def connect_to_milvus(request: ConnectRequest) -> JSONResponse:
 
 
 @app.post("/disconnect")
-def disconnect_from_milvus() -> JSONResponse:
-    return disconnect()
+def disconnect_from_milvus(connection_string: Annotated[str | None, Header()] = None) -> JSONResponse:
+    if connection_string is not None:
+        return disconnect(connection_string)
+    else:
+        return JSONResponse(status_code=400, content="Bad request")
 
 
 # Database CRUD
