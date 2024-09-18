@@ -7,11 +7,12 @@ import { CollectionManagementService } from '../../services/collection-managemen
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { StopPropagationDirective } from '../../../../shared/directives/stop-propagation.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-collection-card',
   standalone: true,
-  imports: [CardModule, ChipModule, StopPropagationDirective],
+  imports: [CardModule, ChipModule, StopPropagationDirective, TooltipModule],
   templateUrl: './collection-card.component.html',
   styleUrl: './collection-card.component.css',
   encapsulation: ViewEncapsulation.None,

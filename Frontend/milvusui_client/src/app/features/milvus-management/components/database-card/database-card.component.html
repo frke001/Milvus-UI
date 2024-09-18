@@ -8,7 +8,7 @@
           <!-- [ngClass] = "{'disabled:opacity-15' : database?.name === 'default'}" -->
           <div
             class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
-            (click)="onDeleteClick(database?.name)" appStopPropagation
+            (click)="onDeleteClick(database?.name)" appStopPropagation [pTooltip]="deleteTooltip" tooltipPosition="bottom"
           >
             @if(this.isLoading && database?.name == nameToDelete){
             <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
@@ -32,4 +32,11 @@
       </p>
     </div>
   </p-card>
+  <ng-template #deleteTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        Delete
+      </p>
+    </div>
+  </ng-template>
 </div>

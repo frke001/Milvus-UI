@@ -18,11 +18,12 @@ import { NgClass, NgStyle } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { Router } from '@angular/router';
 import { StopPropagationDirective } from '../../../../shared/directives/stop-propagation.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-database-card',
   standalone: true,
-  imports: [CardModule, NgClass, NgStyle, RippleModule, StopPropagationDirective],
+  imports: [CardModule, NgClass, NgStyle, RippleModule, StopPropagationDirective, TooltipModule],
   templateUrl: './database-card.component.html',
   styleUrl: './database-card.component.css',
   encapsulation: ViewEncapsulation.None,

@@ -6,7 +6,7 @@
           <i class="pi pi-server" style="font-size: 1.3rem"></i>
           <span
             class="p-1 cursor-pointer hover:bg-milvus-blue rounded-md transition-colors duration-300 hover:text-white"
-            (click)="onCollectionDelete(collection?.name)" appStopPropagation
+            (click)="onCollectionDelete(collection?.name)" appStopPropagation [pTooltip]="deleteTooltip" tooltipPosition="bottom"
           >
             @if(this.isLoading && collection?.name == nameToDelete){
             <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
@@ -47,4 +47,11 @@
       </div>
     </div>
   </p-card>
+  <ng-template #deleteTooltip>
+    <div class="flex align-items-center">
+      <p class="m-0 text-xs">
+        Delete
+      </p>
+    </div>
+  </ng-template>
 </div>
