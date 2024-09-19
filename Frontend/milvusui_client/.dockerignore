@@ -1,0 +1,26 @@
+# Node.js dependency folder
+node_modules
+
+# Angular temporary build folder
+dist
+.angular
+
+# Editor settings
+.vscode
+.editorconfig
+
+# Git related files
+.git
+.gitignore
+
+# NPM related files
+package-lock.json
+
+# Logs and other temporary files
+npm-debug.log
+yarn-error.log
+*.log
+
+# Tailwind cache or generated files
+tailwind.config.js
+

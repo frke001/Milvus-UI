@@ -1,0 +1,16 @@
+# Virtual environments
+myenv
+env/
+venv/
+__pycache__/
+
+# Python bytecode
+*.pyc
+*.pyo
+
+# Git related files
+.git
+.gitignore
+
+# Logs and other temporary files
+*.log
