@@ -12,10 +12,10 @@ MilvusUI is an application developed as practical part of bachelor's thesis, ena
 ## Application screenshots
 
 # Connection page
-![image](https://github.com/user-attachments/assets/7a0beb67-d773-4faa-af14-a2e8a3409c2b)
+![image](https://github.com/user-attachments/assets/1d98c3d9-110f-4310-ab85-8204cbc58539)
 
 # Databases overview
-![image](https://github.com/user-attachments/assets/5768648f-3653-4f59-818c-fb00e04065df)
+![image](https://github.com/user-attachments/assets/7a0beb67-d773-4faa-af14-a2e8a3409c2b)
 
 # Collections overview
 ![image](https://github.com/user-attachments/assets/9233b22f-f294-46db-a04c-af84a92cb65a)
