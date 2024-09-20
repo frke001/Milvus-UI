@@ -9,12 +9,16 @@ MilvusUI is an application developed as practical part of bachelor's thesis, ena
 - **Milvus**: A high-performance database optimized for managing vector data.
 - **Nginx**: A web server used for request management and load balancing.
 
+## Requirements
+
+- Docker engine
+
 ## Installation
 
-[Add installation instructions here if necessary.]
+1. Clone the repository:
 
-## How to Use
+ ```bash
+git clone https://github.com/frke001/Milvus-UI.git
 
-[Add usage instructions here if necessary.]
 
 
