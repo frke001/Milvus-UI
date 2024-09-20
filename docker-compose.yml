@@ -72,12 +72,12 @@ services:
     depends_on:
       - "standalone"
 
-  frontend:
+  proxy:
     build:
-      context: ./Frontend/milvusui_client
-      dockerfile: ./Dockerfile 
+      context: .
+      dockerfile: ./Frontend/milvusui_client/Dockerfile 
     container_name: angular-frontend
     ports:
-      - "4200:4200"
+      - "80:80"
     depends_on:
       - "backend"

@@ -1,12 +1,12 @@
 
 FROM node:20.12.2 AS build
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm install -g @angular/cli
+COPY Frontend/milvusui_client/package.json Frontend/milvusui_client/package-lock.json ./
 RUN npm install
+COPY Frontend/milvusui_client ./
+RUN npm run build --prod
 
-COPY . .
-EXPOSE 4200
-
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY ./Deployment/nginx-custom.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
