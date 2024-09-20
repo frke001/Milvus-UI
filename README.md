@@ -19,6 +19,3 @@ MilvusUI is an application developed as practical part of bachelor's thesis, ena
 
  ```bash
 git clone https://github.com/frke001/Milvus-UI.git
-
-
-
