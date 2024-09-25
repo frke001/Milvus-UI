@@ -206,6 +206,7 @@ export class DataTableComponent implements OnInit {
   }
   onClose() {
     this.visible = false;
+    this.keyValuePairs.clear();
   }
   get keyValuePairs(): FormArray {
     return this.form.get('keyValuePairs') as FormArray;
